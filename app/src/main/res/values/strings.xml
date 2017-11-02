@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MonperaBook</string>
+    <string name="server_ip">http://192.168.43.144/monpera-book/</string>
+</resources>
