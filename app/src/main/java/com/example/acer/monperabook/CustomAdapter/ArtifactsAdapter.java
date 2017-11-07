@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.acer.monperabook.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +21,14 @@ import java.util.List;
 
 public class ArtifactsAdapter extends ArrayAdapter<Artifact> {
 
+    private List<Artifact> mArtifact;
+    private ArrayList<Artifact> mArtifactList;
+
     public ArtifactsAdapter(@NonNull Context context, @NonNull List<Artifact> artifact) {
         super(context, 0, artifact);
+        this.mArtifact = artifact;
+        this.mArtifactList = new ArrayList<>();
+        this.mArtifactList.addAll(artifact);
     }
 
     @NonNull
@@ -45,6 +52,22 @@ public class ArtifactsAdapter extends ArrayAdapter<Artifact> {
         artifactDescription.setText(currentDescription);
 
         return listArtifactView;
+    }
+
+    public void filter(String query) {
+        query = query.toLowerCase();
+        mArtifact.clear();
+        if (query.length() <= 0) {
+            mArtifact.addAll(mArtifactList);
+        } else {
+            for (Artifact artifact : mArtifactList) {
+                if (artifact.getTitle().toLowerCase().contains(query)) {
+                    mArtifact.add(artifact);
+                }
+            }
+        }
+
+        notifyDataSetChanged();
     }
 
 }
