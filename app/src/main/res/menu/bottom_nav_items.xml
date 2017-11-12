@@ -5,13 +5,13 @@
         android:icon="@drawable/ic_home_black"
         />
     <item
-        android:id="@+id/menu_search"
-        android:title="Search"
-        android:icon="@drawable/ic_search_black"
+        android:id="@+id/menu_favorite"
+        android:title="Favorite"
+        android:icon="@drawable/ic_favorite_black"
         />
 
     <item
-        android:id="@+id/menu_notifications"
-        android:title="Notification"
+        android:id="@+id/menu_scan"
+        android:title="Scan QR"
         android:icon="@drawable/ic_notifications_black" />
 </menu>

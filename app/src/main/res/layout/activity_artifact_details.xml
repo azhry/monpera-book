@@ -16,9 +16,10 @@
             android:src="@drawable/p200x200"
             android:scaleType="centerCrop"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -31,7 +32,26 @@
                 android:max="5"
                 android:layout_centerInParent="true"/>
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/favoriteBtn"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Add to Favorite"/>
+
+                <Button
+                    android:id="@+id/rateBtn"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Rate"
+                    android:layout_toRightOf="@id/favoriteBtn"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"

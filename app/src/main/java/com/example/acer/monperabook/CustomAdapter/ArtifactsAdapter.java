@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.acer.monperabook.AsyncTask.DownloadImageTask;
 import com.example.acer.monperabook.R;
 
 import java.util.ArrayList;
@@ -41,12 +42,16 @@ public class ArtifactsAdapter extends ArrayAdapter<Artifact> {
         }
 
         Artifact currentArtifact = getItem(position);
+        String currentCode = currentArtifact.getCode();
         String currentTitle = currentArtifact.getTitle();
         String currentDescription = currentArtifact.getDescription();
 
         TextView artifactTitle = (TextView) listArtifactView.findViewById(R.id.titles);
         TextView artifactDescription = (TextView) listArtifactView.findViewById(R.id.description);
         ImageView artifactThumbnail = (ImageView) listArtifactView.findViewById(R.id.thumbnail);
+
+        String URL = getContext().getString(R.string.server_ip) + "/img/" + currentCode + ".jpg";
+        new DownloadImageTask(artifactThumbnail).execute(URL);
 
         artifactTitle.setText(currentTitle);
         artifactDescription.setText(currentDescription);

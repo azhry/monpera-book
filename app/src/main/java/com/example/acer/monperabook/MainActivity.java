@@ -1,146 +1,93 @@
 package com.example.acer.monperabook;
 
-import android.app.ProgressDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.app.FragmentTransaction;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.acer.monperabook.CustomAdapter.Artifact;
-import com.example.acer.monperabook.CustomAdapter.ArtifactsAdapter;
-import com.example.acer.monperabook.Singleton.AppSingleton;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import com.example.acer.monperabook.Fragment.MenuFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText searchEditText;
-    private ListView artifactsListView;
-    private ArrayList<Artifact> artifacts = new ArrayList<>();
-    private ArtifactsAdapter artifactsAdapter;
     private BottomNavigationView mBottomNav;
     private Context mContext;
-    private ProgressDialog dialog;
-    private String mEndpoint;
-    private String TAG = "monperabook.artifact_list";
+    private int mSelectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchEditText = (EditText) findViewById(R.id.search);
+        mContext = this;
 
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return false;
+                selectFragment(item);
+                return true;
             }
         });
 
-        dialog = new ProgressDialog(this);
-        dialog.setCancelable(false);
-        mContext = this;
-        mEndpoint = getString(R.string.server_ip);
-        artifactsListView = (ListView) findViewById(R.id.list);
-
-        // attach artifact item click listener
-        artifactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                Intent artifactDetailsIntent = new Intent(mContext, ArtifactDetailsActivity.class);
-                Artifact artifact = (Artifact) artifactsListView.getItemAtPosition(position);
-
-                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
-                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
-
-                startActivity(artifactDetailsIntent);
-            }
-        });
-
-        ShowDialog("Loading...", true);
-
-        String requestUrl = mEndpoint + "artifak/get-artifak";
-        JsonObjectRequest getArtifactList = new JsonObjectRequest(Request.Method.GET, requestUrl, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        ShowDialog("", false);
-                        try {
-                            JSONArray artifactList = response.getJSONArray("data");
-                            for (int i = 0; i < artifactList.length(); i++) {
-                                JSONObject artifact = artifactList.getJSONObject(i);
-                                artifacts.add(new Artifact(artifact.getString("nama"), artifact.getString("deskripsi")));
-                            }
-
-                            artifactsAdapter = new ArtifactsAdapter(mContext, artifacts);
-                            artifactsListView.setAdapter(artifactsAdapter);
-
-                            searchEditText.addTextChangedListener(new TextWatcher() {
-                                @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                                @Override
-                                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                                @Override
-                                public void afterTextChanged(Editable s) {
-                                    String query = searchEditText.getText().toString();
-                                    artifactsAdapter.filter(query);
-                                }
-                            });
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            String msg = e.getMessage();
-                            if (msg != null) {
-                                Log.e(TAG, msg);
-                            } else {
-                                Log.e(TAG, "JSONException Unknown Error!");
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        ShowDialog("", false);
-                        String msg = error.getMessage();
-                        if (msg != null) {
-                            Log.e(TAG, msg);
-                        } else {
-                            Log.e(TAG, "Unknown Error!");
-                        }
-                    }
-                });
-
-        AppSingleton.getInstance(this).addToRequestQueue(getArtifactList, TAG);
+        MenuItem selectedItem;
+        if (savedInstanceState != null) {
+            mSelectedItem = savedInstanceState.getInt("item_id", 0);
+            selectedItem = mBottomNav.getMenu().findItem(mSelectedItem);
+        } else {
+            selectedItem = mBottomNav.getMenu().getItem(0);
+        }
+        selectFragment(selectedItem);
     }
 
-    private void ShowDialog(String msg, boolean check) {
-        if (check) {
-            dialog.setMessage(msg);
-            dialog.show();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("item_id", mSelectedItem);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        MenuItem homeItem = mBottomNav.getMenu().getItem(0);
+        if (mSelectedItem != homeItem.getItemId()) {
+            selectFragment(homeItem);
         } else {
-            dialog.dismiss();
+            super.onBackPressed();
+        }
+    }
+
+    private void selectFragment(MenuItem item) {
+        Fragment frag = null;
+        switch (item.getItemId()) {
+            case R.id.menu_home:
+                frag = MenuFragment.newInstance("remote");
+                break;
+            case R.id.menu_favorite:
+                frag = MenuFragment.newInstance("local");
+                break;
+        }
+
+        mSelectedItem = item.getItemId();
+
+        if (mSelectedItem == R.id.menu_scan) {
+            Intent scanQRIntent = new Intent(mContext, CameraActivity.class);
+            startActivity(scanQRIntent);
+        } else {
+            for (int i = 0; i < mBottomNav.getMenu().size(); i++) {
+                MenuItem menuItem = mBottomNav.getMenu().getItem(i);
+                menuItem.setChecked(menuItem.getItemId() == item.getItemId());
+            }
+
+            if (frag != null) {
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.container, frag, frag.getTag());
+                ft.commit();
+            }
         }
     }
 }
