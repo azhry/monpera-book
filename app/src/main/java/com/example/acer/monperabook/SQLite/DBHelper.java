@@ -17,7 +17,7 @@ import java.util.Set;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "monpera_book";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -27,9 +27,17 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         StringBuilder sql = new StringBuilder();
         sql.append("CREATE TABLE artifact_favorites(");
-        sql.append("kode_artifak VARCHAR, ");
+        sql.append("kode_artifak VARCHAR PRIMARY KEY, ");
         sql.append("nama VARCHAR, ");
         sql.append("deskripsi TEXT);");
+        db.execSQL(sql.toString());
+
+        sql = new StringBuilder();
+        sql.append("CREATE TABLE artifact(");
+        sql.append("kode_artifak VARCHAR PRIMARY KEY, ");
+        sql.append("nama VARCHAR, ");
+        sql.append("deskripsi TEXT, ");
+        sql.append("rate FLOAT);");
         db.execSQL(sql.toString());
     }
 

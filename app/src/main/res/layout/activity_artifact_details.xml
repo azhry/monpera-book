@@ -9,6 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="visible" />
+
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
@@ -42,11 +48,17 @@
                     android:layout_width="wrap_content"
                     android:text="Add to Favorite"/>
 
+                <!--<Button-->
+                    <!--android:id="@+id/rateBtn"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:text="Rate"-->
+                    <!--android:layout_toRightOf="@id/favoriteBtn"/>-->
                 <Button
-                    android:id="@+id/rateBtn"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/shareToInstagramBtn"
                     android:layout_width="wrap_content"
-                    android:text="Rate"
+                    android:layout_height="wrap_content"
+                    android:text="Share to Instagram"
                     android:layout_toRightOf="@id/favoriteBtn"/>
 
             </RelativeLayout>

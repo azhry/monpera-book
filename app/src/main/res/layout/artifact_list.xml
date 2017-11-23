@@ -7,6 +7,12 @@
     android:paddingLeft="12dp"
     android:paddingRight="12dp">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="visible" />
+
     <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="100dp"
