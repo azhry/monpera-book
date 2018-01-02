@@ -10,6 +10,12 @@
               android:focusableInTouchMode="true"
     tools:context="com.example.acer.monperabook.MainActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar">
+
+    </include>
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

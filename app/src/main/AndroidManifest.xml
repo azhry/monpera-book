@@ -30,7 +30,9 @@
         <activity android:name=".CameraActivity">
 
         </activity>
-        <activity android:name=".ArtifactDetailsActivity">
+        <activity
+            android:name=".ArtifactDetailsActivity"
+            android:theme="@style/AppBaseTheme">
 
         </activity>
         <activity android:name=".ImageCaptureActivity">

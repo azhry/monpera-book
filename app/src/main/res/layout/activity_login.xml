@@ -47,6 +47,12 @@
             android:text="Login"
             android:layout_centerHorizontal="true"/>
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_sign_in"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

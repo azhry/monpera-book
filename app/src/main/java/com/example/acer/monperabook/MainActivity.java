@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -12,24 +16,39 @@ import android.app.FragmentTransaction;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
+
 import com.example.acer.monperabook.Fragment.MenuFragment;
 
 import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static String TAG = "PROJECT.MainActivity";
+    public static int REQUEST_IMAGE_CAPTURE = 2;
+
     private BottomNavigationView mBottomNav;
     private Context mContext;
     private int mSelectedItem;
+    private Toolbar mToolbar;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        currentFragment = null;
         mContext = this;
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorActionBarContent));
 
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
         disableShiftMode(mBottomNav);
@@ -48,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             selectedItem = mBottomNav.getMenu().getItem(0);
         }
+
         selectFragment(selectedItem);
     }
 
@@ -59,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (currentFragment != null) {
+            MenuFragment f = new MenuFragment();
+            f.onBackPressed(currentFragment);
+        }
+
         MenuItem homeItem = mBottomNav.getMenu().getItem(0);
         if (mSelectedItem != homeItem.getItemId()) {
             selectFragment(homeItem);
@@ -67,14 +92,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bitmap img = (Bitmap)data.getExtras().get("data");
+            Intent imageCaptureIntent = new Intent(mContext, ImageCaptureActivity.class);
+            imageCaptureIntent.putExtra("result", img);
+            startActivity(imageCaptureIntent);
+        }
+    }
+
     private void selectFragment(MenuItem item) {
-        Fragment frag = null;
         switch (item.getItemId()) {
             case R.id.menu_home:
-                frag = MenuFragment.newInstance("remote");
+                mBottomNav.getMenu().getItem(0).setChecked(true);
+                currentFragment = MenuFragment.newInstance("remote");
                 break;
             case R.id.menu_favorite:
-                frag = MenuFragment.newInstance("local");
+                mBottomNav.getMenu().getItem(1).setChecked(true);
+                currentFragment = MenuFragment.newInstance("local");
                 break;
         }
 
@@ -87,17 +123,15 @@ public class MainActivity extends AppCompatActivity {
 //            Intent selfieIntent = new Intent(mContext, ImageCaptureActivity.class);
 //            startActivity(selfieIntent);
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, 2);
-        } else {
-            for (int i = 0; i < mBottomNav.getMenu().size(); i++) {
-                MenuItem menuItem = mBottomNav.getMenu().getItem(i);
-                menuItem.setChecked(menuItem.getItemId() == item.getItemId());
+            mSelectedItem = R.id.menu_home;
+            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
             }
-
-            if (frag != null) {
+        } else {
+            if (currentFragment != null) {
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.container, frag, frag.getTag());
+                ft.replace(R.id.container, currentFragment, currentFragment.getTag());
                 ft.commit();
             }
         }

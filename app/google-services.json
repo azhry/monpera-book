@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "147746937001",
+    "project_id": "monperabook"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147746937001:android:3ba4b1b7486023f2",
+        "android_client_info": {
+          "package_name": "com.example.acer.monperabook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147746937001-op6ht9jpbl7iu9v45m4mt1aejh3pbo13.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "147746937001-d33ulnu1snlpre3plklpbh5fa9vs2nn1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.acer.monperabook",
+            "certificate_hash": "d96bddb6f921b4f1515045ee5e9c5e7fb63ffcb1"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW6PYiC8ZA8TM7XDr2p0L0wEouXqtXuKc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

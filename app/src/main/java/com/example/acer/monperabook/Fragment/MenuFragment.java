@@ -6,19 +6,31 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.DefaultRetryPolicy;
@@ -32,8 +44,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.acer.monperabook.ArtifactDetailsActivity;
 import com.example.acer.monperabook.CustomAdapter.Artifact;
 import com.example.acer.monperabook.CustomAdapter.ArtifactsAdapter;
+import com.example.acer.monperabook.MainActivity;
 import com.example.acer.monperabook.R;
 import com.example.acer.monperabook.SQLite.DBHelper;
+import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
 
 import org.json.JSONArray;
@@ -52,6 +66,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MenuFragment extends Fragment {
 
+    public static String TAG = "PROJECT.MenuFragment";
+
     private static final String ARG_TEXT = "arg_text";
     private static final String ARG_COLOR = "arg_color";
 
@@ -68,10 +84,12 @@ public class MenuFragment extends Fragment {
     private ArtifactsAdapter artifactsAdapter;
     private ProgressDialog dialog;
     private String mEndpoint;
-    private String TAG = "monperabook.artifact_list";
     private DBHelper db;
 
     private static String type;
+
+    private boolean isSearchOpened = false;
+    private EditText editSearch;
 
     public static Fragment newInstance(String type) {
         Fragment frag = new MenuFragment();
@@ -80,6 +98,12 @@ public class MenuFragment extends Fragment {
         frag.setArguments(args);
         MenuFragment.type = type;
         return frag;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -149,18 +173,6 @@ public class MenuFragment extends Fragment {
                         startActivity(artifactDetailsIntent);
                     }
                 });
-
-                searchEditText.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        String query = searchEditText.getText().toString();
-                        artifactsAdapter.filter(query);
-                    }
-                });
                 break;
         }
     }
@@ -168,6 +180,139 @@ public class MenuFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    // to get the action_search edit, override this method
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.action_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+        final MenuItem actionSearch = menu.findItem(R.id.action_search);
+        final MenuItem actionLogout = menu.findItem(R.id.action_logout);
+
+        Drawable actionSearchIcon = actionSearch.getIcon();
+        actionSearchIcon.mutate().setColorFilter
+                (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+
+        Drawable actionLogoutIcon = actionLogout.getIcon();
+        actionLogoutIcon.mutate().setColorFilter
+                (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+    }
+
+    // to handle the click in the search and logout button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                handleMenuSearch(item);
+                return true;
+
+            case R.id.action_logout:
+                SessionManager session = new SessionManager(getActivity().getApplicationContext());
+                session.logoutUser();
+                getActivity().finish();
+                return true;
+        }
+        return false;
+    }
+
+    public void onBackPressed(Fragment frag) {
+        if (isSearchOpened) {
+            final ActionBar action = ((AppCompatActivity)getActivity()).getSupportActionBar(); // get the action bar
+
+            action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
+            action.setDisplayShowTitleEnabled(true); //show the title in the action bar
+
+            //hides the keyboard
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+
+            MenuItem item = (MenuItem)getActivity().findViewById(R.id.action_search);
+
+            //add the search icon in the action bar
+            item.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
+            item.getIcon().mutate().setColorFilter
+                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+            isSearchOpened = false;
+        }
+    }
+
+    protected void handleMenuSearch(final MenuItem item) {
+        final ActionBar action = ((AppCompatActivity)getActivity()).getSupportActionBar(); // get the action bar
+
+        if (isSearchOpened) { // test if the search is open
+
+            action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
+            action.setDisplayShowTitleEnabled(true); //show the title in the action bar
+
+            //hides the keyboard
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+
+            //add the search icon in the action bar
+            item.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
+            item.getIcon().mutate().setColorFilter
+                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+            isSearchOpened = false;
+        } else { //open the search entry
+
+            action.setDisplayShowCustomEnabled(true); //enable it to display a
+            // custom view in the action bar.
+            action.setCustomView(R.layout.search_bar);//add the custom view
+            action.setDisplayShowTitleEnabled(false); //hide the title
+
+            editSearch = (EditText)action.getCustomView().findViewById(R.id.edit_search); //the text editor
+            editSearch.setTextColor(getResources().getColor(R.color.colorActionBarContent));
+
+            editSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String query = editSearch.getText().toString();
+                    artifactsAdapter.filter(query);
+                }
+            });
+
+            //this is a listener to do a search when the user clicks on search button
+            editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
+                        action.setDisplayShowTitleEnabled(true); //show the title in the action bar
+
+                        //hides the keyboard
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+
+                        //add the search icon in the action bar
+                        item.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
+                        item.getIcon().mutate().setColorFilter
+                                (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+                        isSearchOpened = false;
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            editSearch.requestFocus();
+
+            //open the keyboard focused in the editSearch
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT);
+
+            //add the close icon
+            item.setIcon(getResources().getDrawable(R.drawable.ic_close_black_24dp));
+            item.getIcon().mutate().setColorFilter
+                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+
+            isSearchOpened = true;
+        }
     }
 
     private void ShowDialog(String msg, boolean check) {
@@ -195,17 +340,6 @@ public class MenuFragment extends Fragment {
                 artifactsAdapter.notifyDataSetChanged();
                 artifactsListView.setAdapter(artifactsAdapter);
 
-                searchEditText.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        String query = searchEditText.getText().toString();
-                        artifactsAdapter.filter(query);
-                    }
-                });
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
@@ -353,5 +487,4 @@ public class MenuFragment extends Fragment {
         artifactsAdapter.notifyDataSetChanged();
         artifactsListView.setAdapter(artifactsAdapter);
     }
-
 }

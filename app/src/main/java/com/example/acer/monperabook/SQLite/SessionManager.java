@@ -1,7 +1,10 @@
 package com.example.acer.monperabook.SQLite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.example.acer.monperabook.MainGatewayActivity;
 
 /**
  * Created by Azhary Arliansyah on 25/11/2017.
@@ -33,5 +36,15 @@ public class SessionManager {
 
     public boolean isUserLoggedIn() {
         return this.pref.getBoolean("LoggedIn", false);
+    }
+
+    public void logoutUser() {
+        editor.clear();
+        editor.commit();
+
+        Intent intent = new Intent(context, MainGatewayActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }

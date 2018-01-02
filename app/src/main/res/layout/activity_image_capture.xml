@@ -1,48 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar">
+
+    </include>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
-            android:id="@+id/frm">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/frm"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp">
+
+                <ImageView
+                    android:id="@+id/img1"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/p200x200"/>
+
+                <ImageView
+                    android:id="@+id/img2"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/badge"/>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/frm"
+                android:id="@+id/btns"
+                android:layout_centerInParent="true">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:id="@+id/save_btn"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/share_btn"
+                    android:text="Share to Instagram"/>
+
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:id="@+id/img1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/p200x200"/>
+                android:layout_below="@+id/btns"
+                android:id="@+id/mergedPhoto"/>
 
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:id="@+id/img2"
-                android:src="@drawable/badge"/>
+        </RelativeLayout>
 
-        </FrameLayout>
+    </ScrollView>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/frm"
-            android:text="Merge Photos"
-            android:id="@+id/merge"
-            android:onClick="buttonMerge"
-            android:layout_centerInParent="true"/>
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_below="@+id/merge"
-            android:id="@+id/mergedPhoto"/>
-
-    </RelativeLayout>
-
-</ScrollView>
+</LinearLayout>

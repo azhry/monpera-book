@@ -10,11 +10,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,6 +35,10 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.acer.monperabook.AsyncTask.DownloadImageTask;
+import com.example.acer.monperabook.ImageSlider.FragmentSlider;
+import com.example.acer.monperabook.ImageSlider.SliderIndicator;
+import com.example.acer.monperabook.ImageSlider.SliderPagerAdapter;
+import com.example.acer.monperabook.ImageSlider.SliderView;
 import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.Singleton.AppSingleton;
 
@@ -43,7 +50,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,10 +75,20 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
     private String code;
     private DBHelper db;
 
+    private SliderPagerAdapter mAdapter;
+    private SliderIndicator mIndicator;
+
+    private SliderView sliderView;
+    private LinearLayout mLinearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_artifact_details);
+
+        sliderView = (SliderView)findViewById(R.id.sliderView);
+        mLinearLayout = (LinearLayout)findViewById(R.id.pagesContainer);
+        setupSlider();
 
         extras                  = getIntent().getExtras();
         code                    = extras.getString("kode_artifak");
@@ -110,7 +129,7 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
 
         if (extras.containsKey("local")) {
             ratingBar.setVisibility(View.GONE);
-            rateBtn.setVisibility(View.GONE);
+            //rateBtn.setVisibility(View.GONE);
             favoriteBtn.setVisibility(View.GONE);
         } else {
             favoriteBtn.setOnClickListener(new View.OnClickListener() {
@@ -239,6 +258,27 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return bmpUri;
+    }
+
+    private void setupSlider() {
+        sliderView.setDurationScroll(800);
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(FragmentSlider.newInstance("https://image.tmdb.org/t/p/w250_and_h141_bestv2/biN2sqExViEh8IYSJrXlNKjpjxx.jpg"));
+        fragments.add(FragmentSlider.newInstance("https://image.tmdb.org/t/p/w250_and_h141_bestv2/o9OKe3M06QMLOzTl3l6GStYtnE9.jpg"));
+
+        mAdapter = new SliderPagerAdapter(getSupportFragmentManager(), fragments);
+        sliderView.setAdapter(mAdapter);
+        mIndicator = new SliderIndicator(this, mLinearLayout, sliderView, R.drawable.indicator_circle);
+        mIndicator.setPageCount(fragments.size());
+        mIndicator.show();
+
+
+        sliderView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
     }
 
 }
