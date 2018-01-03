@@ -328,13 +328,15 @@ public class MenuFragment extends Fragment {
         String requestUrl = mEndpoint + "artifak/get-artifak";
         Cache cache = AppSingleton.getInstance(view.getContext()).getRequestQueue().getCache();
         Cache.Entry entry = cache.get(requestUrl);
-        if (entry != null) {
+        if (entry != null && !entry.refreshNeeded()) {
             try {
                 JSONObject response = new JSONObject(new String(entry.data, "UTF-8"));
                 JSONArray artifactList = response.getJSONArray("data");
                 for (int i = 0; i < artifactList.length(); i++) {
                     JSONObject artifact = artifactList.getJSONObject(i);
-                    remoteArtifacts.add(new Artifact(artifact.getString("kode_artifak"), artifact.getString("nama"), artifact.getString("deskripsi")));
+                    remoteArtifacts.add(new Artifact(artifact.getString("kode_artifak"),
+                            artifact.getString("nama"), artifact.getString("deskripsi"),
+                            artifact.getString("like")));
                 }
                 artifactsAdapter = new ArtifactsAdapter(view.getContext(), remoteArtifacts);
                 artifactsAdapter.notifyDataSetChanged();
@@ -355,11 +357,14 @@ public class MenuFragment extends Fragment {
                             try {
                                 db = new DBHelper(view.getContext());
                                 db.delete("artifact", "1=1");
+                                remoteArtifacts.clear();
 
                                 JSONArray artifactList = response.getJSONArray("data");
                                 for (int i = 0; i < artifactList.length(); i++) {
                                     JSONObject artifact = artifactList.getJSONObject(i);
-                                    remoteArtifacts.add(new Artifact(artifact.getString("kode_artifak"), artifact.getString("nama"), artifact.getString("deskripsi")));
+                                    remoteArtifacts.add(new Artifact(artifact.getString("kode_artifak"),
+                                            artifact.getString("nama"), artifact.getString("deskripsi"),
+                                            artifact.getString("like")));
                                     Map<String, String> data = new HashMap<>();
                                     data.put("kode_artifak", artifact.getString("kode_artifak"));
                                     data.put("nama", artifact.getString("nama"));

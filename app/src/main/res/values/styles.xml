@@ -7,7 +7,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
-        <item name="colorControlNormal">@color/colorActionBarContent</item>
     </style>
 
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">

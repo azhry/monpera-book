@@ -54,9 +54,11 @@ public class ArtifactsAdapter extends ArrayAdapter<Artifact> {
         String currentCode = currentArtifact.getCode();
         String currentTitle = currentArtifact.getTitle();
         String currentDescription = currentArtifact.getDescription();
+        String currentLike = currentArtifact.getLike();
 
         TextView artifactTitle = (TextView) listArtifactView.findViewById(R.id.titles);
         TextView artifactDescription = (TextView) listArtifactView.findViewById(R.id.description);
+        TextView artifactLike = (TextView) listArtifactView.findViewById(R.id.favorite_count);
         ImageView artifactThumbnail = (ImageView) listArtifactView.findViewById(R.id.thumbnail);
         final ProgressBar thumbnailProgressBar = (ProgressBar)listArtifactView.findViewById(R.id.progress);
 
@@ -82,6 +84,7 @@ public class ArtifactsAdapter extends ArrayAdapter<Artifact> {
 
         artifactTitle.setText(currentTitle);
         artifactDescription.setText(currentDescription);
+        artifactLike.setText(currentLike);
 
         return listArtifactView;
     }

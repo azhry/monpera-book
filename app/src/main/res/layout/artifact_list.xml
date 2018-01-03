@@ -26,19 +26,50 @@
         android:orientation="vertical"
         android:layout_marginLeft="10dp">
 
-        <TextView
-            android:id="@+id/titles"
+        <LinearLayout
+            android:id="@+id/artifact_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="title"
-            android:textAllCaps="true"
-            android:textSize="18dp"/>
+            android:layout_height="80dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/description"
+            <TextView
+                android:id="@+id/titles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="title"
+                android:textAllCaps="true"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"/>
+            android:layout_height="20dp">
+
+            <ImageView
+                android:layout_toLeftOf="@+id/favorite_count"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_favorite_black"
+                android:id="@+id/favorite_icon"
+                android:tint="#ff0000"
+                android:layout_marginRight="3dp"/>
+
+            <TextView
+                android:layout_alignParentRight="true"
+                android:id="@+id/favorite_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:layout_marginRight="15dp"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

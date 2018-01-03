@@ -28,17 +28,9 @@
                 android:layout_marginTop="15dp">
 
                 <ImageView
-                    android:id="@+id/img1"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/p200x200"/>
-
-                <ImageView
-                    android:id="@+id/img2"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/badge"/>
+                    android:id="@+id/mergedPhoto"/>
 
             </FrameLayout>
 
@@ -62,12 +54,6 @@
                     android:text="Share to Instagram"/>
 
             </LinearLayout>
-
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_below="@+id/btns"
-                android:id="@+id/mergedPhoto"/>
 
         </RelativeLayout>
 
