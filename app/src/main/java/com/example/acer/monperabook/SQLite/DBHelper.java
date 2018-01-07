@@ -17,7 +17,7 @@ import java.util.Set;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "monpera_book";
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 4;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -29,7 +29,8 @@ public class DBHelper extends SQLiteOpenHelper {
         sql.append("CREATE TABLE artifact_favorites(");
         sql.append("kode_artifak VARCHAR PRIMARY KEY, ");
         sql.append("nama VARCHAR, ");
-        sql.append("deskripsi TEXT);");
+        sql.append("deskripsi TEXT, ");
+        sql.append("foto TEXT);");
         db.execSQL(sql.toString());
 
         sql = new StringBuilder();
@@ -37,6 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sql.append("kode_artifak VARCHAR PRIMARY KEY, ");
         sql.append("nama VARCHAR, ");
         sql.append("deskripsi TEXT, ");
+        sql.append("foto TEXT, ");
         sql.append("rate FLOAT);");
         db.execSQL(sql.toString());
     }
@@ -44,6 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS artifact_favorites");
+        db.execSQL("DROP TABLE IF EXISTS artifact");
         onCreate(db);
     }
 

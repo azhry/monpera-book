@@ -18,6 +18,11 @@ public class SessionManager {
 
     private int PRIVATE_MODE = 0;
     private static final String PREF_NAME = "AppPreferences";
+    private static final String LOGGED_IN = "LoggedIn";
+    private static final String USER_ID = "UserId";
+    private static final String USERNAME = "Username";
+    private static final String EMAIL = "Email";
+    private static final String NAME = "Name";
 
     public SessionManager(Context context) {
         this.context = context;
@@ -26,16 +31,20 @@ public class SessionManager {
     }
 
     public void createLoginSession(String userId, String username, String email, String name) {
-        this.editor.putBoolean("LoggedIn", true);
-        this.editor.putString("UserId", userId);
-        this.editor.putString("Username", username);
-        this.editor.putString("Email", email);
-        this.editor.putString("Name", name);
+        this.editor.putBoolean(LOGGED_IN, true);
+        this.editor.putString(USER_ID, userId);
+        this.editor.putString(USERNAME, username);
+        this.editor.putString(EMAIL, email);
+        this.editor.putString(NAME, name);
         this.editor.commit();
     }
 
+    public String getUserId() {
+        return this.pref.getString(USER_ID, "");
+    }
+
     public boolean isUserLoggedIn() {
-        return this.pref.getBoolean("LoggedIn", false);
+        return this.pref.getBoolean(LOGGED_IN, false);
     }
 
     public void logoutUser() {

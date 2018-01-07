@@ -10,14 +10,14 @@ public class Artifact {
     private String title;
     private String description;
     private String like;
-    private String[] images;
+    private String images;
 
     public Artifact(String code, String title, String description) {
         this.code = code;
         this.title = title;
         this.description = description;
         this.like = "0";
-        this.images = new String[] {};
+        this.images = "";
     }
 
     public Artifact(String code, String title, String description, String like) {
@@ -25,10 +25,10 @@ public class Artifact {
         this.title = title;
         this.description = description;
         this.like = like;
-        this.images = new String[] {};
+        this.images = "";
     }
 
-    public Artifact(String code, String title, String description, String like, String[] images) {
+    public Artifact(String code, String title, String description, String like, String images) {
         this.code = code;
         this.title = title;
         this.description = description;
@@ -48,5 +48,5 @@ public class Artifact {
 
     public String getLike() { return this.like; }
 
-    public String[] getImages() { return this.images; }
+    public String getImages() { return this.images; }
 }

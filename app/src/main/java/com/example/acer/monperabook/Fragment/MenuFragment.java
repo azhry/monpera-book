@@ -68,15 +68,6 @@ public class MenuFragment extends Fragment {
 
     public static String TAG = "PROJECT.MenuFragment";
 
-    private static final String ARG_TEXT = "arg_text";
-    private static final String ARG_COLOR = "arg_color";
-
-    private String mText;
-    private int mColor;
-
-    private View mContent;
-    private TextView mTextView;
-
     private EditText searchEditText;
     private ListView artifactsListView;
     private ArrayList<Artifact> remoteArtifacts = new ArrayList<>();
@@ -135,6 +126,7 @@ public class MenuFragment extends Fragment {
                         artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
                         artifactDetailsIntent.putExtra("nama", artifact.getTitle());
                         artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
+                        artifactDetailsIntent.putExtra("foto", artifact.getImages());
 
                         startActivity(artifactDetailsIntent);
                     }
@@ -170,6 +162,7 @@ public class MenuFragment extends Fragment {
                         artifactDetailsIntent.putExtra("nama", artifact.getTitle());
                         artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
                         artifactDetailsIntent.putExtra("local", true);
+                        artifactDetailsIntent.putExtra("foto", artifact.getImages());
                         startActivity(artifactDetailsIntent);
                     }
                 });
@@ -336,7 +329,7 @@ public class MenuFragment extends Fragment {
                     JSONObject artifact = artifactList.getJSONObject(i);
                     remoteArtifacts.add(new Artifact(artifact.getString("kode_artifak"),
                             artifact.getString("nama"), artifact.getString("deskripsi"),
-                            artifact.getString("like")));
+                            artifact.getString("like"), artifact.getString("foto")));
                 }
                 artifactsAdapter = new ArtifactsAdapter(view.getContext(), remoteArtifacts);
                 artifactsAdapter.notifyDataSetChanged();
@@ -364,11 +357,12 @@ public class MenuFragment extends Fragment {
                                     JSONObject artifact = artifactList.getJSONObject(i);
                                     remoteArtifacts.add(new Artifact(artifact.getString("kode_artifak"),
                                             artifact.getString("nama"), artifact.getString("deskripsi"),
-                                            artifact.getString("like")));
+                                            artifact.getString("like"), artifact.getString("foto")));
                                     Map<String, String> data = new HashMap<>();
                                     data.put("kode_artifak", artifact.getString("kode_artifak"));
                                     data.put("nama", artifact.getString("nama"));
                                     data.put("deskripsi", artifact.getString("deskripsi"));
+                                    data.put("foto", artifact.getString("foto"));
                                     db.insert("artifact", data);
                                 }
 
