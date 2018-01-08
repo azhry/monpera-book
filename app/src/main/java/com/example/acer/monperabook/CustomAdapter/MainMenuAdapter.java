@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.acer.monperabook.MainActivity;
 import com.example.acer.monperabook.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by Azhary Arliansyah on 04/01/2018.
@@ -21,9 +24,9 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
     private Context context;
     private String[] menus;
     private int[] icons;
-    private Intent[] activities;
+    private ArrayList<Intent> activities;
 
-    public MainMenuAdapter(Context context, String[] menus, int[] icons, Intent[] activities) {
+    public MainMenuAdapter(Context context, String[] menus, int[] icons, ArrayList<Intent> activities) {
         this.context = context;
         this.menus = menus;
         this.icons = icons;
@@ -43,7 +46,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(activities[position]);
+                context.startActivity(activities.get(position));
             }
         });
     }

@@ -18,7 +18,7 @@ public class MainGatewayActivity extends AppCompatActivity {
         Intent activityIntent;
         SessionManager sessionManager = new SessionManager(this);
         if (sessionManager.isUserLoggedIn()) {
-            activityIntent = new Intent(this, MainActivity.class);
+            activityIntent = new Intent(this, MainMenuActivity.class);
         } else {
             activityIntent = new Intent(this, LoginActivity.class);
         }

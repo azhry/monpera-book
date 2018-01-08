@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -53,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button loginButton;
+    private CheckBox showHidePasswordCheckBox;
     private GoogleApiClient mGoogleApiClient;
     private SignInButton btnSignIn;
 
@@ -67,6 +73,7 @@ public class LoginActivity extends AppCompatActivity implements
         usernameEditText = (EditText)findViewById(R.id.username);
         passwordEditText = (EditText)findViewById(R.id.password);
         loginButton = (Button)findViewById(R.id.loginBtn);
+        showHidePasswordCheckBox = (CheckBox)findViewById(R.id.showHidePassword);
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
         btnSignIn.setOnClickListener(this);
 
@@ -86,6 +93,22 @@ public class LoginActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 login();
+            }
+        });
+
+        showHidePasswordCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    showHidePasswordCheckBox.setText("Hide Password");
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+                    passwordEditText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    showHidePasswordCheckBox.setText("Show Password");
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT
+                            | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    passwordEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
             }
         });
 
@@ -146,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 String name = data.getString("name");
                                 SessionManager sessionManager = new SessionManager(mContext);
                                 sessionManager.createLoginSession(String.valueOf(userId), username, email, name);
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
