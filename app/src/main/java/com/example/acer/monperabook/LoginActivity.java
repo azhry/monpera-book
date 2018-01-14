@@ -29,6 +29,9 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -104,7 +107,28 @@ public class LoginActivity extends AppCompatActivity implements
             @Override
             public void onSuccess(LoginResult loginResult) {
                 AccessToken accessToken = loginResult.getAccessToken();
-                Log.e(TAG, accessToken.getToken());
+                Profile profile = Profile.getCurrentProfile();
+                final String userId = profile.getId();
+                final String name = profile.getName();
+                GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.e(TAG, "response: " + response.toString());
+                        try {
+                            String email = object.getString("email");
+                            Log.e(TAG, userId);
+                            Log.e(TAG, name);
+                            Log.e(TAG, email);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "email");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
