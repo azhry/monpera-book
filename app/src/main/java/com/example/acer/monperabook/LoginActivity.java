@@ -25,6 +25,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -51,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 007;
+    public static CallbackManager callbackManager;
 
     private Context mContext;
     private ProgressDialog progressDialog;
@@ -61,12 +68,14 @@ public class LoginActivity extends AppCompatActivity implements
     private CheckBox showHidePasswordCheckBox;
     private GoogleApiClient mGoogleApiClient;
     private SignInButton btnSignIn;
+    private LoginButton fbLoginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mContext = this;
+        callbackManager = CallbackManager.Factory.create();
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setCancelable(false);
         endpoint = getString(R.string.server_ip);
@@ -76,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements
         showHidePasswordCheckBox = (CheckBox)findViewById(R.id.showHidePassword);
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
         btnSignIn.setOnClickListener(this);
+        fbLoginBtn = (LoginButton)findViewById(R.id.fb_sign_in);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -88,6 +98,28 @@ public class LoginActivity extends AppCompatActivity implements
 
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setScopes(gso.getScopeArray());
+
+        fbLoginBtn.setReadPermissions("email");
+        fbLoginBtn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = loginResult.getAccessToken();
+                Log.e(TAG, accessToken.getToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(mContext, "Login cancelled!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                String msg = error.toString();
+                if (msg != null) {
+                    Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,12 +275,14 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            super.onActivityResult(requestCode, resultCode, data);
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

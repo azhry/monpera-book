@@ -105,8 +105,14 @@
             android:id="@+id/btn_sign_in"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginTop="3dp"/>
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/fb_sign_in"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp" />
     </LinearLayout>
 
 
