@@ -49,6 +49,7 @@ import com.example.acer.monperabook.R;
 import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
+import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -204,6 +205,7 @@ public class MenuFragment extends Fragment {
             case R.id.action_logout:
                 SessionManager session = new SessionManager(getActivity().getApplicationContext());
                 session.logoutUser();
+                LoginManager.getInstance().logOut();
                 getActivity().finish();
                 return true;
         }

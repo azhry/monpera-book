@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -99,8 +100,14 @@ public class LoginActivity extends AppCompatActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        }
+
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setScopes(gso.getScopeArray());
+        TextView btnSignInText = (TextView)btnSignIn.getChildAt(0);
+        btnSignInText.setText("Login with Google");
 
         fbLoginBtn.setReadPermissions("email");
         fbLoginBtn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -113,12 +120,9 @@ public class LoginActivity extends AppCompatActivity implements
                 GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.e(TAG, "response: " + response.toString());
                         try {
                             String email = object.getString("email");
-                            Log.e(TAG, userId);
-                            Log.e(TAG, name);
-                            Log.e(TAG, email);
+                            loginWith3rdParty(userId, "facebook", name, email);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -268,6 +272,73 @@ public class LoginActivity extends AppCompatActivity implements
         AppSingleton.getInstance(mContext).addToRequestQueue(loginRequest, "LOGIN_REQUEST");
     }
 
+    private void loginWith3rdParty(final String id, final String type, final String name, final String email) {
+        String URL = endpoint + "/login/third_party_authentication";
+        StringRequest loginRequest = new StringRequest(Request.Method.POST, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.dismiss();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            boolean error = jsonObject.getBoolean("error");
+                            if (error) {
+                                Toast.makeText(mContext, jsonObject.getString("error_message"), Toast.LENGTH_SHORT).show();
+                            } else {
+                                JSONObject data = new JSONObject(jsonObject.getString("data"));
+                                int userId = data.getInt("id_user");
+                                String username = data.getString("username");
+                                String email = data.getString("email");
+                                String name = data.getString("name");
+                                SessionManager sessionManager = new SessionManager(mContext);
+                                sessionManager.createLoginSession(String.valueOf(userId), username, email, name);
+                                Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e("JSON_EXCEPTION", e.getMessage());
+                            progressDialog.dismiss();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String msg = error.getMessage();
+                        if (msg != null) {
+                            Log.e("ERR_LOGIN", msg);
+                        }
+                        Toast.makeText(mContext, "Unknown error", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("auth_id", id);
+                params.put("auth_type", type);
+                params.put("name", name);
+                params.put("email", email);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("auth_id", id);
+                params.put("auth_type", type);
+                params.put("name", name);
+                params.put("email", email);
+                return params;
+            }
+        };
+
+        AppSingleton.getInstance(mContext).addToRequestQueue(loginRequest, "LOGIN_REQUEST");
+    }
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -277,8 +348,13 @@ public class LoginActivity extends AppCompatActivity implements
         Log.e(TAG, "handleSignInResult: " + result.isSuccess());
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
+            Log.e(TAG, "ID: " + account.getId());
             Log.e(TAG, "display name: " + account.getDisplayName());
             Log.e(TAG, "email: " + account.getEmail());
+            String userId = account.getId();
+            String name = account.getDisplayName();
+            String email = account.getEmail();
+            loginWith3rdParty(userId, "google", name, email);
         }
     }
 
@@ -310,30 +386,30 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone()) {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            Log.e(TAG, "Got cached sign-in");
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        } else {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-                    progressDialog.hide();
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+//        if (opr.isDone()) {
+//            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+//            // and the GoogleSignInResult will be available instantly.
+////            Log.e(TAG, "Got cached sign-in");
+////            GoogleSignInResult result = opr.get();
+////            handleSignInResult(result);
+//        } else {
+//            // If the user has not previously signed in on this device or the sign-in has expired,
+//            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+//            // single sign-on will occur in this branch.
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.show();
+//            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+//                @Override
+//                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+//                    progressDialog.hide();
+//                    handleSignInResult(googleSignInResult);
+//                }
+//            });
+//        }
+//    }
 }

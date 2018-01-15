@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.example.acer.monperabook.CustomAdapter.MainMenuAdapter;
 import com.example.acer.monperabook.SQLite.SessionManager;
+import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
 
@@ -95,6 +96,7 @@ public class MainMenuActivity extends AppCompatActivity {
             case R.id.action_logout:
                 SessionManager session = new SessionManager(getApplicationContext());
                 session.logoutUser();
+                LoginManager.getInstance().logOut();
                 finish();
                 break;
         }
