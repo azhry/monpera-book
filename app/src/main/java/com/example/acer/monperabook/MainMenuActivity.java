@@ -56,7 +56,7 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ACTIVITIES.add(new Intent(MainMenuActivity.this, MainActivity.class));
-        ACTIVITIES.add(new Intent(MainMenuActivity.this, MainActivity.class));
+        ACTIVITIES.add(new Intent(MainMenuActivity.this, MuseumProfileActivity.class));
         ACTIVITIES.add(new Intent(MainMenuActivity.this, MainActivity.class));
         ACTIVITIES.add(new Intent(MainMenuActivity.this, MainActivity.class));
         ACTIVITIES.add(new Intent(MainMenuActivity.this, MainActivity.class));

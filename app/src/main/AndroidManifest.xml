@@ -63,6 +63,12 @@
         <activity android:name=".ArtifactFavoritesActivity">
 
         </activity>
+        <activity android:name=".MuseumProfileActivity">
+
+        </activity>
+        <activity android:name=".AboutAppActivity">
+
+        </activity>
     </application>
 
 </manifest>
