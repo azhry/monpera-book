@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Museum SMB</string>
-    <string name="server_ip">http://192.168.43.144/monpera-book/</string>
-    <!--<string name="server_ip">http://192.168.1.101/monpera-book/</string>-->
+    <!--<string name="server_ip">http://192.168.43.144/monpera-book/</string>-->
+    <string name="server_ip">http://192.168.1.105/monpera-book/</string>
+
+    <string name="google_api_key2">AIzaSyBgcsybXEDUG0BSfajOeI9gXXR7t9-mTM4</string>
 
     <string name="facebook_app_id">1933903689958384</string>
     <string name="fb_login_protocol_scheme">fb1933903689958384</string>
