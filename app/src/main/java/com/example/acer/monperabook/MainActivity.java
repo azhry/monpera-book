@@ -104,12 +104,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectFragment(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_home:
+            case R.id.menu_other:
                 mBottomNav.getMenu().getItem(0).setChecked(true);
+                currentFragment = MenuFragment.newInstance("other");
+                break;
+            case R.id.menu_home:
+                mBottomNav.getMenu().getItem(1).setChecked(true);
                 currentFragment = MenuFragment.newInstance("remote");
                 break;
             case R.id.menu_favorite:
-                mBottomNav.getMenu().getItem(1).setChecked(true);
+                mBottomNav.getMenu().getItem(2).setChecked(true);
                 currentFragment = MenuFragment.newInstance("local");
                 break;
         }

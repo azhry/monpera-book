@@ -3,6 +3,7 @@ package com.example.acer.monperabook.ImageSlider;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,9 @@ public class SliderPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        int index = position % mFrags.size();
+        Log.e(TAG, String.valueOf(mFrags.size()));
+        int size = mFrags.size();
+        int index = size <= 0 ? 0 : position % size;
         return FragmentSlider.newInstance(mFrags.get(index).getArguments().getString("params"));
     }
 

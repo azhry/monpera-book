@@ -12,8 +12,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,12 +27,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,14 +49,26 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.acer.monperabook.ArtifactDetailsActivity;
+import com.example.acer.monperabook.ChallengeActivity;
 import com.example.acer.monperabook.CustomAdapter.Artifact;
 import com.example.acer.monperabook.CustomAdapter.ArtifactsAdapter;
+import com.example.acer.monperabook.CustomAdapter.CollectionsAdapter;
+import com.example.acer.monperabook.CustomAdapter.CollectionsRecyclerAdapter;
+import com.example.acer.monperabook.ImageSlider.FragmentSlider;
+import com.example.acer.monperabook.ImageSlider.ShadowTransformer;
+import com.example.acer.monperabook.ImageSlider.SliderIndicator;
+import com.example.acer.monperabook.ImageSlider.SliderPagerAdapter;
+import com.example.acer.monperabook.ImageSlider.SliderView;
 import com.example.acer.monperabook.MainActivity;
 import com.example.acer.monperabook.R;
 import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
+import com.example.acer.monperabook.Slider.CardFragmentPagerAdapter;
+import com.example.acer.monperabook.Slider.CardItem;
+import com.example.acer.monperabook.Slider.CardPagerAdapter;
 import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
@@ -58,8 +78,11 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Azhary Arliansyah on 12/11/2017.
@@ -71,9 +94,14 @@ public class MenuFragment extends Fragment {
 
     private EditText searchEditText;
     private ListView artifactsListView;
+    private ListView popularCollectionsListView;
     private ArrayList<Artifact> remoteArtifacts = new ArrayList<>();
     private ArrayList<Artifact> localArtifacts = new ArrayList<>();
+    private ArrayList<Artifact> popularCollections = new ArrayList<>();
     private ArtifactsAdapter artifactsAdapter;
+    private CollectionsAdapter popularCollectionsAdapter;
+    private CollectionsRecyclerAdapter popularCollectionsRecyclerAdapter;
+    private RecyclerView popularCollectionRecyclerView;
     private ProgressDialog dialog;
     private String mEndpoint;
     private DBHelper db;
@@ -82,6 +110,22 @@ public class MenuFragment extends Fragment {
 
     private boolean isSearchOpened = false;
     private EditText editSearch;
+
+    private SliderPagerAdapter mAdapter;
+    private SliderIndicator mIndicator;
+    private SliderView sliderView;
+    private LinearLayout mLinearLayout;
+
+    private Button mButton;
+    private ViewPager mViewPager;
+
+    private CardPagerAdapter mCardAdapter;
+    private ShadowTransformer mCardShadowTransformer;
+    private CardFragmentPagerAdapter mFragmentCardAdapter;
+    private ShadowTransformer mFragmentCardShadowTransformer;
+
+    private boolean mShowingFragments = false;
+    private FragmentActivity fragmentActivity;
 
     public static Fragment newInstance(String type) {
         Fragment frag = new MenuFragment();
@@ -99,8 +143,21 @@ public class MenuFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        fragmentActivity =(FragmentActivity) activity;
+        super.onAttach(activity);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.menu_fragment, container, false);
+
+        switch (type) {
+            case "other":
+                return inflater.inflate(R.layout.activity_other_menu, container, false);
+            default:
+                return inflater.inflate(R.layout.menu_fragment, container, false);
+        }
+
     }
 
     @Override
@@ -112,10 +169,37 @@ public class MenuFragment extends Fragment {
 
         searchEditText = (EditText) view.findViewById(R.id.search);
         mEndpoint = getString(R.string.server_ip);
-        artifactsListView = (ListView) view.findViewById(R.id.list);
 
         switch (type) {
+            case "other":
+                sliderView      = (SliderView)view.findViewById(R.id.sliderView);
+                mLinearLayout   = (LinearLayout)view.findViewById(R.id.pagesContainer);
+                setupSlider(fragmentActivity.getSupportFragmentManager());
+//                mViewPager = (ViewPager) view.findViewById(R.id.viewPager);
+//                mCardAdapter = new CardPagerAdapter(view.getContext());
+//                getMostFavoriteArtifact();
+
+                popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
+                        LinearLayoutManager.HORIZONTAL, false);
+                popularCollectionRecyclerView.setLayoutManager(layoutManager);
+                popularCollectionRecyclerView.setHasFixedSize(true);
+                popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
+                        view.getContext());
+                popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
+                getMostFavoriteArtifact2(view);
+
+                Button joinChallengeButton = (Button) view.findViewById(R.id.joinChallengeButton);
+                joinChallengeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(view.getContext(), ChallengeActivity.class));
+                    }
+                });
+                break;
             case "remote":
+
+                artifactsListView = (ListView) view.findViewById(R.id.list);
 
                 // attach artifact item click listener
                 artifactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -137,6 +221,8 @@ public class MenuFragment extends Fragment {
                 break;
 
             case "local":
+
+                artifactsListView = (ListView) view.findViewById(R.id.list);
                 db = new DBHelper(view.getContext());
 
                 Cursor c = db.select("artifact_favorites");
@@ -487,5 +573,125 @@ public class MenuFragment extends Fragment {
         artifactsAdapter = new ArtifactsAdapter(view.getContext(), localArtifacts);
         artifactsAdapter.notifyDataSetChanged();
         artifactsListView.setAdapter(artifactsAdapter);
+    }
+
+    private static float dpToPixels(int dp, Context context) {
+        return dp * (context.getResources().getDisplayMetrics().density);
+    }
+
+    private void setupSlider(FragmentManager fragmentManager) {
+        sliderView.setDurationScroll(800);
+        List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
+        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1000.jpg"));
+        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1001.jpg"));
+        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/Kunci pintu Kaabah.jpeg"));
+
+        mAdapter = new SliderPagerAdapter(fragmentManager, fragments);
+        sliderView.setAdapter(mAdapter);
+        mIndicator = new SliderIndicator(getActivity(), mLinearLayout, sliderView, R.drawable.indicator_circle);
+        mIndicator.setPageCount(fragments.size());
+        mIndicator.show();
+
+        sliderView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+    }
+
+    private void getMostFavoriteArtifact() {
+
+        StringRequest getMostFavorite = new StringRequest(Request.Method.GET, mEndpoint + "artifak/most-favorite?limit=3",
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            JSONArray data = jsonResponse.getJSONArray("data");
+                            for (int i = 0; i < data.length(); i++) {
+
+                                JSONObject artifact = data.getJSONObject(i);
+                                JSONArray thumbnailUrl = new JSONArray(artifact.getString("foto"));
+                                String imgUrl = mEndpoint + "img/" + thumbnailUrl.getString(0);
+
+                                mCardAdapter.addCardItem(new CardItem(artifact.getString("kode_artifak"),
+                                        artifact.getString("nama"),
+                                        artifact.getString("deskripsi"),
+                                        imgUrl, artifact.getString("like")));
+
+                            }
+
+                            mFragmentCardAdapter = new CardFragmentPagerAdapter(fragmentActivity.getSupportFragmentManager(),
+                                    dpToPixels(2, getActivity()));
+
+//                            mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
+//                            mFragmentCardShadowTransformer = new ShadowTransformer(mViewPager, mFragmentCardAdapter);
+
+                            mViewPager.setAdapter(mCardAdapter);
+
+//                            mViewPager.setPageTransformer(false, mCardShadowTransformer);
+                            mViewPager.setOffscreenPageLimit(3);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String msg = error.getMessage();
+                        if (msg != null) {
+                            Log.e(TAG, msg);
+                        }
+                    }
+                });
+
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(getMostFavorite, TAG);
+    }
+
+    private void getMostFavoriteArtifact2(final View view) {
+
+        StringRequest getMostFavorite = new StringRequest(Request.Method.GET, mEndpoint + "artifak/most-favorite?limit=3",
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.e(TAG, response);
+                            JSONObject jsonResponse = new JSONObject(response);
+                            JSONArray data = jsonResponse.getJSONArray("data");
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject artifact = data.getJSONObject(i);
+                                JSONArray thumbnailUrl = new JSONArray(artifact.getString("foto"));
+                                String imgUrl = mEndpoint + "img/" + thumbnailUrl.getString(0);
+                                popularCollections.add(new Artifact(artifact.getString("kode_artifak"),
+                                        artifact.getString("nama"), artifact.getString("deskripsi"),
+                                        artifact.getString("like"), artifact.getString("foto")));
+                            }
+
+                            popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
+                                    view.getContext());
+                            popularCollectionsRecyclerAdapter.notifyDataSetChanged();
+                            popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String msg = error.getMessage();
+                        if (msg != null) {
+                            Log.e(TAG, msg);
+                        }
+                    }
+                });
+
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(getMostFavorite, TAG + "listview");
     }
 }

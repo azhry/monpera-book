@@ -41,12 +41,20 @@ public class DBHelper extends SQLiteOpenHelper {
         sql.append("foto TEXT, ");
         sql.append("rate FLOAT);");
         db.execSQL(sql.toString());
+
+        sql = new StringBuilder();
+        sql.append("CREATE TABLE question(");
+        sql.append("id_pertanyaan INT PRIMARY KEY, ");
+        sql.append("kode_artifak, ");
+        sql.append("pertanyaan TEXT);");
+        db.execSQL(sql.toString());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS artifact_favorites");
         db.execSQL("DROP TABLE IF EXISTS artifact");
+        db.execSQL("DROP TABLE IF EXISTS question");
         onCreate(db);
     }
 

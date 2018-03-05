@@ -34,14 +34,6 @@ public class MuseumProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorActionBarContent));
 
-        museumProfile = (TextView)findViewById(R.id.museum_profile);
-        museumHistory = (TextView)findViewById(R.id.museum_history);
-        museumSchedule = (TextView)findViewById(R.id.museum_schedule);
-        museumTicketPrices = (TextView)findViewById(R.id.museum_ticket_prices);
-
-        museumProfile.setText(R.string.museum_profile);
-        museumHistory.setText(R.string.museum_history);
-
     }
 
 }

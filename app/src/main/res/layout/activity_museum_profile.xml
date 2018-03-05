@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,67 +26,336 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/profile_header"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Profile Museum"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="9dp"/>
+                    android:layout_marginBottom="6dp">
 
-                <TextView
-                    android:id="@+id/museum_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"/>
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/history_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sejarah Museum"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="9dp"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal">
 
-                <TextView
-                    android:id="@+id/museum_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"/>
+                            <TextView
+                                android:layout_width="190dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="Museum Sultan Mahmud Badaruddin II Palembang"
+                                android:textSize="19sp"/>
 
-                <TextView
-                    android:id="@+id/schedule_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jadwal Museum"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="9dp"/>
+                            <ImageView
+                                android:layout_margin="12dp"
+                                android:layout_width="200dp"
+                                android:layout_height="200dp"
+                                android:src="@drawable/p200x200"/>
 
-                <TextView
-                    android:id="@+id/museum_schedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                    android:layout_marginBottom="16dp"/>
+                        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/ticket_prices_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Harga Tiket Masuk"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="9dp"/>
+                    </android.support.v7.widget.CardView>
 
-                <TextView
-                    android:id="@+id/museum_ticket_prices"
-                    android:layout_width="wrap_content"
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                    android:layout_marginBottom="16dp"/>
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
+
+                        <com.github.florent37.expansionpanel.ExpansionHeader
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            app:expansion_headerIndicator="@id/headerIndicator"
+                            app:expansion_layout="@id/expansionLayout"
+                            app:expansion_toggleOnClick="true">
+
+                            <TextView
+                                android:id="@+id/profile_header"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Profile Museum"
+                                android:textSize="17sp"/>
+
+                            ...
+                            <!-- HEADER INDICATOR -->
+                            <android.support.v7.widget.AppCompatImageView
+                                android:adjustViewBounds="true"
+                                android:id="@+id/headerIndicator"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_width="wrap_content"
+                                android:src="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+
+                        </com.github.florent37.expansionpanel.ExpansionHeader>
+                        <com.github.florent37.expansionpanel.ExpansionLayout
+                            android:id="@+id/expansionLayout"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent">
+
+                            <TextView
+                                android:id="@+id/museum_profile"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Text profile museum"/>
+
+                        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <com.github.florent37.expansionpanel.ExpansionHeader
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        app:expansion_headerIndicator="@id/headerIndicator2"
+                        app:expansion_layout="@id/expansionLayout2"
+                        app:expansion_toggleOnClick="true">
+
+                        <android.support.v7.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sejarah Museum"
+                                android:textSize="17sp"/>
+                        ...
+                        <!-- HEADER INDICATOR -->
+                            <android.support.v7.widget.AppCompatImageView
+                                android:adjustViewBounds="true"
+                                android:id="@+id/headerIndicator2"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_width="wrap_content"
+                                android:src="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+                        </android.support.v7.widget.CardView>
+
+                    </com.github.florent37.expansionpanel.ExpansionHeader>
+                    <com.github.florent37.expansionpanel.ExpansionLayout
+                            android:id="@+id/expansionLayout2"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginBottom="5dp">
+
+                            <android.support.v7.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Sejarah museum text"/>
+
+                            </android.support.v7.widget.CardView>
+
+                        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
+
+                        <com.github.florent37.expansionpanel.ExpansionHeader
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            app:expansion_headerIndicator="@id/headerIndicator3"
+                            app:expansion_layout="@id/expansionLayout3"
+                            app:expansion_toggleOnClick="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jadwal Operasional"
+                                android:textSize="17sp"/>
+
+                            ...
+                            <!-- HEADER INDICATOR -->
+                            <android.support.v7.widget.AppCompatImageView
+                                android:adjustViewBounds="true"
+                                android:id="@+id/headerIndicator3"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_width="wrap_content"
+                                android:src="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+
+                        </com.github.florent37.expansionpanel.ExpansionHeader>
+                        <com.github.florent37.expansionpanel.ExpansionLayout
+                            android:id="@+id/expansionLayout3"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jadwal operasional text"/>
+
+                        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
+
+                        <com.github.florent37.expansionpanel.ExpansionHeader
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            app:expansion_headerIndicator="@id/headerIndicator4"
+                            app:expansion_layout="@id/expansionLayout4"
+                            app:expansion_toggleOnClick="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Harga Tiket Masuk"
+                                android:textSize="17sp"/>
+
+                            ...
+                            <!-- HEADER INDICATOR -->
+                            <android.support.v7.widget.AppCompatImageView
+                                android:adjustViewBounds="true"
+                                android:id="@+id/headerIndicator4"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_width="wrap_content"
+                                android:src="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+
+                        </com.github.florent37.expansionpanel.ExpansionHeader>
+                        <com.github.florent37.expansionpanel.ExpansionLayout
+                            android:id="@+id/expansionLayout4"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Harga tiket masuk text"/>
+
+                        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
+
+                        <com.github.florent37.expansionpanel.ExpansionHeader
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            app:expansion_headerIndicator="@id/headerIndicator5"
+                            app:expansion_layout="@id/expansionLayout5"
+                            app:expansion_toggleOnClick="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kontak"
+                                android:textSize="17sp"/>
+
+                            ...
+                            <!-- HEADER INDICATOR -->
+                            <android.support.v7.widget.AppCompatImageView
+                                android:adjustViewBounds="true"
+                                android:id="@+id/headerIndicator5"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_width="wrap_content"
+                                android:src="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+
+                        </com.github.florent37.expansionpanel.ExpansionHeader>
+                        <com.github.florent37.expansionpanel.ExpansionLayout
+                            android:id="@+id/expansionLayout5"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kontak text"/>
+
+                        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
+
+                        <com.github.florent37.expansionpanel.ExpansionHeader
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            app:expansion_headerIndicator="@id/headerIndicator6"
+                            app:expansion_layout="@id/expansionLayout6"
+                            app:expansion_toggleOnClick="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Alamat"
+                                android:textSize="17sp"/>
+
+                            ...
+                            <!-- HEADER INDICATOR -->
+                            <android.support.v7.widget.AppCompatImageView
+                                android:adjustViewBounds="true"
+                                android:id="@+id/headerIndicator6"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_width="wrap_content"
+                                android:src="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+
+                        </com.github.florent37.expansionpanel.ExpansionHeader>
+                        <com.github.florent37.expansionpanel.ExpansionLayout
+                            android:id="@+id/expansionLayout6"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Jl. Sultan Mahmud Badaruddin, 19 Ilir, Bukit Kecil, Kota Palembang, Sumatera Selatan 30113"/>
+
+                                <TextView
+                                    android:id="@+id/showRouteText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tampilkan rute ke museum"
+                                    android:textColor="@color/colorPrimary"/>
+
+                            </LinearLayout>
+
+                        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
 
             </LinearLayout>
 

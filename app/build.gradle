@@ -15,6 +15,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            crunchPngs false
         }
     }
 }
@@ -40,6 +41,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.google.android.gms:play-services-maps:11.8.0'
     compile 'com.google.android.gms:play-services-location:11.8.0'
+    compile 'com.github.florent37:expansionpanel:1.1.0'
     implementation 'com.facebook.android:facebook-login:4.30.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
     testCompile 'junit:junit:4.12'

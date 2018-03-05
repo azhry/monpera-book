@@ -1,10 +1,18 @@
 package com.example.acer.monperabook;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.acer.monperabook.Maps.DataParser;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,6 +42,10 @@ import java.util.List;
 
 public class MapRouteActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final int REQUEST_ACCESS_LOCATION = 1;
+    private static final int REQUEST_COARSE_LOCATION = 2;
+    private static final String TAG = "MapRouteActivity";
+    private Context mContext;
     private GoogleMap map;
     private ArrayList<LatLng> coordinates;
 
@@ -41,24 +53,63 @@ public class MapRouteActivity extends FragmentActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_route);
+        mContext = this;
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         coordinates = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission
+                .ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat
+                .checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_ACCESS_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_COARSE_LOCATION);
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        setRoute();
+    }
 
-        // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_ACCESS_LOCATION || requestCode == REQUEST_COARSE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "Permission granted!");
+                setRoute();
+            } else {
+                Toast.makeText(mContext,
+                        "The app was not allowed to write to your storage. Hence, it cannot function properly." +
+                                " Please consider granting it this permission", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
-        LatLng destination = new LatLng(-36, 146);
-        coordinates.add(sydney);
+    private void setRoute() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission
+                .ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat
+                .checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        map.setMyLocationEnabled(true);
+        Criteria criteria = new Criteria();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(provider);
+        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        map.addMarker(new MarkerOptions().position(currentLatLng).title("You"));
+        map.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+
+        LatLng destination = new LatLng(-2.990250, 104.761124);
+        coordinates.add(currentLatLng);
         coordinates.add(destination);
         MarkerOptions options = new MarkerOptions();
+        options.title("Museum Sultan Mahmud Badarudin II");
         options.position(destination);
         if (coordinates.size() == 2) {
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
