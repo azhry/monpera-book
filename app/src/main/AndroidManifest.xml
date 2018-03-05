@@ -91,6 +91,9 @@
         <activity android:name=".ChallengeActivity">
 
         </activity>
+        <activity android:name=".ChallengeFinishActivity">
+
+        </activity>
     </application>
 
 </manifest>

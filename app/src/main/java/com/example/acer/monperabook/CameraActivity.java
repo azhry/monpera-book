@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 /**
@@ -31,6 +35,9 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class CameraActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private ZXingScannerView mScannerView;
+    private Toolbar toolbar;
+    private TextView codeText;
+
     private String mEndpoint;
     private Context mContext;
 
@@ -47,17 +54,26 @@ public class CameraActivity extends AppCompatActivity implements ZXingScannerVie
                     1);
         }
 
-        mScannerView = new ZXingScannerView(this);
-        setContentView(mScannerView);
-
         mEndpoint = getString(R.string.server_ip);
         mContext = this;
+
+        setContentView(R.layout.activity_camera);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorActionBarContent));
+
+        codeText = (TextView) findViewById(R.id.kode);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        mScannerView = new ZXingScannerView(this);
+//        setContentView(mScannerView);
+        linearLayout.addView(mScannerView);
     }
 
     @Override
     public void handleResult(Result result) {
         final String TAG = "QR_CODE";
         String artifactCode = result.getText();
+        codeText.setText(artifactCode);
         String requestURL = mEndpoint + "artifak/get-artifak?kode_artifak=" + artifactCode;
         JsonObjectRequest getArtifact = new JsonObjectRequest(Request.Method.GET, requestURL, null,
                 new Response.Listener<JSONObject>() {
@@ -74,6 +90,8 @@ public class CameraActivity extends AppCompatActivity implements ZXingScannerVie
                                     artifactDetailsIntent.putExtra("kode_artifak", artifact.getString("kode_artifak"));
                                     artifactDetailsIntent.putExtra("nama", artifact.getString("nama"));
                                     artifactDetailsIntent.putExtra("deskripsi", artifact.getString("deskripsi"));
+                                    artifactDetailsIntent.putExtra("foto", artifact.getString("foto"));
+                                    artifactDetailsIntent.putExtra("like", artifact.getString("like"));
                                     startActivity(artifactDetailsIntent);
                                 } else {
                                     Toast.makeText(mContext, "Data not found", Toast.LENGTH_SHORT).show();

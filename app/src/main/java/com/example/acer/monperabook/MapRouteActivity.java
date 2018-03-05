@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,7 +42,7 @@ import java.util.List;
  * Created by Azhary Arliansyah on 03/02/2018.
  */
 
-public class MapRouteActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapRouteActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int REQUEST_ACCESS_LOCATION = 1;
     private static final int REQUEST_COARSE_LOCATION = 2;
@@ -48,12 +50,16 @@ public class MapRouteActivity extends FragmentActivity implements OnMapReadyCall
     private Context mContext;
     private GoogleMap map;
     private ArrayList<LatLng> coordinates;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_route);
         mContext = this;
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorActionBarContent));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         coordinates = new ArrayList<>();

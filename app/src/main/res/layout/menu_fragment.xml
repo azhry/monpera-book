@@ -8,17 +8,11 @@
               android:focusable="true"
               android:focusableInTouchMode="true">
 
-    <EditText
-        android:id="@+id/search"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search.."
-        android:drawableLeft="@drawable/ic_search_black"/>
-
     <ListView
         android:id="@+id/list"
         android:layout_weight="1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:dividerHeight="2dip"/>
 
 </LinearLayout>

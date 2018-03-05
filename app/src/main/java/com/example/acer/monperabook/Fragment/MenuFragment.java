@@ -92,7 +92,6 @@ public class MenuFragment extends Fragment {
 
     public static String TAG = "PROJECT.MenuFragment";
 
-    private EditText searchEditText;
     private ListView artifactsListView;
     private ListView popularCollectionsListView;
     private ArrayList<Artifact> remoteArtifacts = new ArrayList<>();
@@ -167,7 +166,6 @@ public class MenuFragment extends Fragment {
         dialog = new ProgressDialog(view.getContext());
         dialog.setCancelable(false);
 
-        searchEditText = (EditText) view.findViewById(R.id.search);
         mEndpoint = getString(R.string.server_ip);
 
         switch (type) {
@@ -212,6 +210,7 @@ public class MenuFragment extends Fragment {
                         artifactDetailsIntent.putExtra("nama", artifact.getTitle());
                         artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
                         artifactDetailsIntent.putExtra("foto", artifact.getImages());
+                        artifactDetailsIntent.putExtra("like", artifact.getLike());
 
                         startActivity(artifactDetailsIntent);
                     }
@@ -457,18 +456,6 @@ public class MenuFragment extends Fragment {
                                 artifactsAdapter = new ArtifactsAdapter(view.getContext(), remoteArtifacts);
                                 artifactsAdapter.notifyDataSetChanged();
                                 artifactsListView.setAdapter(artifactsAdapter);
-
-                                searchEditText.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-                                        String query = searchEditText.getText().toString();
-                                        artifactsAdapter.filter(query);
-                                    }
-                                });
 
                             } catch (JSONException e) {
                                 e.printStackTrace();

@@ -159,6 +159,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/likeCountText"
                         android:text="Difavoritkan oleh 27 pengunjung"
                         android:layout_marginBottom="5dp"/>
 
@@ -186,7 +187,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tampilkan seluruh catatan"
+            android:text="Tampilkan catatan"
             android:id="@+id/showAllNotes"
             android:textSize="13sp"/>
 
@@ -205,6 +206,7 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:id="@+id/addNoteButton"
                 android:src="@drawable/ic_send_black_24dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"/>

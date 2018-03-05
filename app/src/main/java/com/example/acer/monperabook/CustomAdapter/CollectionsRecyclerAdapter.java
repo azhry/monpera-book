@@ -56,6 +56,7 @@ public class CollectionsRecyclerAdapter extends RecyclerView.Adapter<Collections
                 artifactDetailsIntent.putExtra("nama", artifact.getTitle());
                 artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
                 artifactDetailsIntent.putExtra("foto", artifact.getImages());
+                artifactDetailsIntent.putExtra("like", artifact.getLike());
 
                 view.getContext().startActivity(artifactDetailsIntent);
             }
