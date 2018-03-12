@@ -21,7 +21,8 @@
         android:icon="@drawable/ic_qr_code" />
 
     <item
-        android:id="@+id/menu_selfie"
-        android:title="Selfie"
-        android:icon="@drawable/ic_notifications_black" />
+        android:id="@+id/menu_more"
+        android:title="More"
+        android:icon="@drawable/ic_more_horiz_black_24dp" />
+
 </menu>

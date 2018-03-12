@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 mBottomNav.getMenu().getItem(2).setChecked(true);
                 currentFragment = MenuFragment.newInstance("local");
                 break;
+            case R.id.menu_more:
+                mBottomNav.getMenu().getItem(4).setChecked(true);
+                currentFragment = MenuFragment.newInstance("main");
+                break;
         }
 
         mSelectedItem = item.getItemId();
@@ -123,14 +127,6 @@ public class MainActivity extends AppCompatActivity {
         if (mSelectedItem == R.id.menu_scan) {
             Intent scanQRIntent = new Intent(mContext, CameraActivity.class);
             startActivity(scanQRIntent);
-        } else if (mSelectedItem == R.id.menu_selfie) {
-//            Intent selfieIntent = new Intent(mContext, ImageCaptureActivity.class);
-//            startActivity(selfieIntent);
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            mSelectedItem = R.id.menu_home;
-            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
-            }
         } else {
             if (currentFragment != null) {
                 FragmentManager fm = getFragmentManager();

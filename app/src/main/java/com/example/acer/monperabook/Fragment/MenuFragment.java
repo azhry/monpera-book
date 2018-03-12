@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -56,12 +57,15 @@ import com.example.acer.monperabook.CustomAdapter.Artifact;
 import com.example.acer.monperabook.CustomAdapter.ArtifactsAdapter;
 import com.example.acer.monperabook.CustomAdapter.CollectionsAdapter;
 import com.example.acer.monperabook.CustomAdapter.CollectionsRecyclerAdapter;
+import com.example.acer.monperabook.CustomAdapter.MainMenuAdapter;
 import com.example.acer.monperabook.ImageSlider.FragmentSlider;
 import com.example.acer.monperabook.ImageSlider.ShadowTransformer;
 import com.example.acer.monperabook.ImageSlider.SliderIndicator;
 import com.example.acer.monperabook.ImageSlider.SliderPagerAdapter;
 import com.example.acer.monperabook.ImageSlider.SliderView;
 import com.example.acer.monperabook.MainActivity;
+import com.example.acer.monperabook.MainMenuActivity;
+import com.example.acer.monperabook.MuseumProfileActivity;
 import com.example.acer.monperabook.R;
 import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.SQLite.SessionManager;
@@ -91,40 +95,26 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class MenuFragment extends Fragment {
 
     public static String TAG = "PROJECT.MenuFragment";
-
     private ListView artifactsListView;
-    private ListView popularCollectionsListView;
     private ArrayList<Artifact> remoteArtifacts = new ArrayList<>();
     private ArrayList<Artifact> localArtifacts = new ArrayList<>();
     private ArrayList<Artifact> popularCollections = new ArrayList<>();
     private ArtifactsAdapter artifactsAdapter;
-    private CollectionsAdapter popularCollectionsAdapter;
     private CollectionsRecyclerAdapter popularCollectionsRecyclerAdapter;
     private RecyclerView popularCollectionRecyclerView;
     private ProgressDialog dialog;
     private String mEndpoint;
     private DBHelper db;
-
     private static String type;
-
     private boolean isSearchOpened = false;
     private EditText editSearch;
-
     private SliderPagerAdapter mAdapter;
     private SliderIndicator mIndicator;
     private SliderView sliderView;
     private LinearLayout mLinearLayout;
-
-    private Button mButton;
-    private ViewPager mViewPager;
-
-    private CardPagerAdapter mCardAdapter;
-    private ShadowTransformer mCardShadowTransformer;
-    private CardFragmentPagerAdapter mFragmentCardAdapter;
-    private ShadowTransformer mFragmentCardShadowTransformer;
-
-    private boolean mShowingFragments = false;
     private FragmentActivity fragmentActivity;
+    private RecyclerView menuRecyclerView;
+    private MainMenuAdapter menuRecyclerViewAdapter;
 
     public static Fragment newInstance(String type) {
         Fragment frag = new MenuFragment();
@@ -151,6 +141,8 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         switch (type) {
+            case "main":
+                return inflater.inflate(R.layout.activity_main_menu, container, false);
             case "other":
                 return inflater.inflate(R.layout.activity_other_menu, container, false);
             default:
@@ -169,13 +161,44 @@ public class MenuFragment extends Fragment {
         mEndpoint = getString(R.string.server_ip);
 
         switch (type) {
+            case "main":
+                int SPAN_COUNT = 2;
+                String[] MENUS = new String[] {
+                    "Berdasarkan Jenis",
+                    "Profil Museum",
+                    "Populer",
+                    "Tutorial/Help",
+                    "Tentang Aplikasi",
+                    "Cari"
+                };
+                int[] ICONS = new int[] {
+                    R.drawable.ic_subject_black_24dp,
+                    R.drawable.ic_account_balance_black_24dp,
+                    R.drawable.ic_favorite_black,
+                    R.drawable.ic_help_outline_black_24dp,
+                    R.drawable.ic_error_outline_black_24dp,
+                    R.drawable.ic_search_black_24dp
+                };
+                ArrayList<Intent> ACTIVITIES = new ArrayList<>();
+                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), MuseumProfileActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+                for (Intent intent : ACTIVITIES) {
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                menuRecyclerView = (RecyclerView)view.findViewById(R.id.menu_recycler_view);
+                menuRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), SPAN_COUNT));
+                menuRecyclerViewAdapter = new MainMenuAdapter(getApplicationContext(), MENUS, ICONS, ACTIVITIES);
+                menuRecyclerView.setAdapter(menuRecyclerViewAdapter);
+
+                break;
             case "other":
                 sliderView      = (SliderView)view.findViewById(R.id.sliderView);
                 mLinearLayout   = (LinearLayout)view.findViewById(R.id.pagesContainer);
                 setupSlider(fragmentActivity.getSupportFragmentManager());
-//                mViewPager = (ViewPager) view.findViewById(R.id.viewPager);
-//                mCardAdapter = new CardPagerAdapter(view.getContext());
-//                getMostFavoriteArtifact();
 
                 popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
@@ -264,19 +287,31 @@ public class MenuFragment extends Fragment {
     // to get the action_search edit, override this method
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
         inflater.inflate(R.menu.action_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-        final MenuItem actionSearch = menu.findItem(R.id.action_search);
-        final MenuItem actionLogout = menu.findItem(R.id.action_logout);
+        if ( type.equals("remote") || type.equals("local") ) {
 
-        Drawable actionSearchIcon = actionSearch.getIcon();
-        actionSearchIcon.mutate().setColorFilter
-                (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+            final MenuItem actionSearch = menu.findItem(R.id.action_search);
+            actionSearch.setVisible(true);
+
+            Drawable actionSearchIcon = actionSearch.getIcon();
+            actionSearchIcon.mutate().setColorFilter
+                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+
+        } else {
+
+            menu.findItem(R.id.action_search).setVisible(false);
+
+        }
+
+        final MenuItem actionLogout = menu.findItem(R.id.action_logout);
 
         Drawable actionLogoutIcon = actionLogout.getIcon();
         actionLogoutIcon.mutate().setColorFilter
                 (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+
     }
 
     // to handle the click in the search and logout button
@@ -585,58 +620,6 @@ public class MenuFragment extends Fragment {
                 return false;
             }
         });
-    }
-
-    private void getMostFavoriteArtifact() {
-
-        StringRequest getMostFavorite = new StringRequest(Request.Method.GET, mEndpoint + "artifak/most-favorite?limit=3",
-
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            JSONArray data = jsonResponse.getJSONArray("data");
-                            for (int i = 0; i < data.length(); i++) {
-
-                                JSONObject artifact = data.getJSONObject(i);
-                                JSONArray thumbnailUrl = new JSONArray(artifact.getString("foto"));
-                                String imgUrl = mEndpoint + "img/" + thumbnailUrl.getString(0);
-
-                                mCardAdapter.addCardItem(new CardItem(artifact.getString("kode_artifak"),
-                                        artifact.getString("nama"),
-                                        artifact.getString("deskripsi"),
-                                        imgUrl, artifact.getString("like")));
-
-                            }
-
-                            mFragmentCardAdapter = new CardFragmentPagerAdapter(fragmentActivity.getSupportFragmentManager(),
-                                    dpToPixels(2, getActivity()));
-
-//                            mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
-//                            mFragmentCardShadowTransformer = new ShadowTransformer(mViewPager, mFragmentCardAdapter);
-
-                            mViewPager.setAdapter(mCardAdapter);
-
-//                            mViewPager.setPageTransformer(false, mCardShadowTransformer);
-                            mViewPager.setOffscreenPageLimit(3);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String msg = error.getMessage();
-                        if (msg != null) {
-                            Log.e(TAG, msg);
-                        }
-                    }
-                });
-
-        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(getMostFavorite, TAG);
     }
 
     private void getMostFavoriteArtifact2(final View view) {
