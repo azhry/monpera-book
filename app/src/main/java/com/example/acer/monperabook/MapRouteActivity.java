@@ -221,8 +221,6 @@ public class MapRouteActivity extends AppCompatActivity implements OnMapReadyCal
                 } else {
                     Log.e("onPostExecute", "without Polylines drawn");
                 }
-            } else {
-                this.execute();
             }
         }
     }

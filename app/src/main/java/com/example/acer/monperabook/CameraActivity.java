@@ -3,6 +3,7 @@ package com.example.acer.monperabook;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,12 +19,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.Singleton.AppSingleton;
 import com.google.zxing.Result;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -85,13 +90,26 @@ public class CameraActivity extends AppCompatActivity implements ZXingScannerVie
                                 JSONArray data = response.getJSONArray("data");
                                 if (data.length() > 0) {
                                     JSONObject artifact = data.getJSONObject(0);
-                                    mScannerView.stopCamera();
+
+                                    // check whether artifact had been scanned before
+                                    DBHelper db = new DBHelper(mContext);
+                                    Cursor record = db.select("question",
+                                            "kode_artifak='" + artifact.getString("kode_artifak") + "'");
+                                    if (!record.moveToFirst()) {
+                                        Map<String, String> question = new HashMap<>();
+                                        question.put("kode_artifak", artifact.getString("kode_artifak"));
+                                        question.put("pertanyaan", "");
+                                        db.insert("question", question);
+                                    }
+
                                     Intent artifactDetailsIntent = new Intent(mContext, ArtifactDetailsActivity.class);
                                     artifactDetailsIntent.putExtra("kode_artifak", artifact.getString("kode_artifak"));
                                     artifactDetailsIntent.putExtra("nama", artifact.getString("nama"));
                                     artifactDetailsIntent.putExtra("deskripsi", artifact.getString("deskripsi"));
                                     artifactDetailsIntent.putExtra("foto", artifact.getString("foto"));
                                     artifactDetailsIntent.putExtra("like", artifact.getString("like"));
+
+                                    mScannerView.stopCamera();
                                     startActivity(artifactDetailsIntent);
                                 } else {
                                     Toast.makeText(mContext, "Data not found", Toast.LENGTH_SHORT).show();
@@ -138,5 +156,11 @@ public class CameraActivity extends AppCompatActivity implements ZXingScannerVie
     public void onPause() {
         super.onPause();
         mScannerView.stopCamera();
+    }
+
+    private void getQuestion() {
+
+
+
     }
 }
