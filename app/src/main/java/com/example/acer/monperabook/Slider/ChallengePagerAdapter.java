@@ -75,7 +75,10 @@ public class ChallengePagerAdapter extends PagerAdapter {
         RadioButton radioButton2 = (RadioButton) view.findViewById(R.id.answer_2);
         RadioButton radioButton3 = (RadioButton) view.findViewById(R.id.answer_3);
         RadioButton radioButton4 = (RadioButton) view.findViewById(R.id.answer_4);
-
+        radioButton1.setText(answers.get(0));
+        radioButton2.setText(answers.get(1));
+        radioButton3.setText(answers.get(2));
+        radioButton4.setText(answers.get(3));
     }
 
 }

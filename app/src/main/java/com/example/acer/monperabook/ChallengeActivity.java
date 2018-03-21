@@ -8,7 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -35,12 +39,12 @@ public class ChallengeActivity extends AppCompatActivity {
     public static final String TAG = "ChallengeActivity";
     private ViewPager mViewPager;
     private ChallengePagerAdapter mChallengePagerAdapter;
-    private CardFragmentPagerAdapter mCardFragmentPagerAdapter;
     private Toolbar toolbar;
     private Button prevButton;
     private Button nextButton;
     private Button submitButton;
     private String mEndpoint;
+    private RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +78,11 @@ public class ChallengeActivity extends AppCompatActivity {
                                 JSONArray answers = questions.getJSONObject(i).getJSONArray("jawaban");
                                 List<String> answerList = new ArrayList<>();
                                 for (int j = 0; j < answers.length(); j++) {
-                                    answerList.add(answers.getJSONObject(i).getString("jawaban"));
+                                    answerList.add(answers.getJSONObject(j).getString("jawaban"));
                                 }
-                                mChallengePagerAdapter.addChallenge(new Challenge(questions.getJSONObject(i)
-                                        .getString("pertanyaan"), answerList));
+                                JSONObject question = new JSONObject(questions.getJSONObject(i)
+                                        .getString("pertanyaan"));
+                                mChallengePagerAdapter.addChallenge(new Challenge(question.getString("pertanyaan"), answerList));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -91,6 +96,8 @@ public class ChallengeActivity extends AppCompatActivity {
                         prevButton = (Button) findViewById(R.id.prevButton);
                         nextButton = (Button) findViewById(R.id.nextButton);
                         submitButton = (Button) findViewById(R.id.submitButton);
+
+                        radioGroup = (RadioGroup)findViewById(R.id.radio_group);
 
                         prevButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -113,8 +120,23 @@ public class ChallengeActivity extends AppCompatActivity {
                         submitButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent challengeFinishIntent = new Intent(ChallengeActivity.this, ChallengeFinishActivity.class);
-                                startActivity(challengeFinishIntent);
+//                                Intent challengeFinishIntent = new Intent(ChallengeActivity.this, ChallengeFinishActivity.class);
+//                                startActivity(challengeFinishIntent);
+                                int count = mViewPager.getChildCount();
+                                ArrayList<String> selectedRadioButton = new ArrayList<>();
+                                for (int i = 0; i < count; i++) {
+                                    View cardView = mViewPager.getChildAt(i);
+                                    View linearLayoutView = ((ViewGroup)cardView).getChildAt(0);
+                                    View questionView = ((ViewGroup)linearLayoutView).getChildAt(1);
+                                    for (int j = 0; j < ((ViewGroup)questionView).getChildCount(); j++) {
+                                        View o = ((ViewGroup)questionView).getChildAt(j);
+                                        if (o instanceof RadioButton) {
+                                            selectedRadioButton.add(((RadioButton) o).getText().toString());
+                                        }
+                                    }
+                                }
+                                Toast.makeText(ChallengeActivity.this, selectedRadioButton.toString(), Toast.LENGTH_SHORT)
+                                        .show();
                             }
                         });
                     }
