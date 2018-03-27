@@ -40,6 +40,15 @@
                     android:layout_width="230dp"
                     android:layout_height="wrap_content"/>
 
+                <TextView
+                    android:id="@+id/skor"
+                    android:text="Skor: 78%"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
                 <android.support.v7.widget.CardView
                     android:layout_width="250dp"
                     android:layout_height="260dp"

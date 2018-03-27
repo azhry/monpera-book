@@ -11,9 +11,10 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.DefaultRetryPolicy;
@@ -55,24 +55,18 @@ import com.example.acer.monperabook.ArtifactDetailsActivity;
 import com.example.acer.monperabook.ChallengeActivity;
 import com.example.acer.monperabook.CustomAdapter.Artifact;
 import com.example.acer.monperabook.CustomAdapter.ArtifactsAdapter;
-import com.example.acer.monperabook.CustomAdapter.CollectionsAdapter;
 import com.example.acer.monperabook.CustomAdapter.CollectionsRecyclerAdapter;
 import com.example.acer.monperabook.CustomAdapter.MainMenuAdapter;
 import com.example.acer.monperabook.ImageSlider.FragmentSlider;
-import com.example.acer.monperabook.ImageSlider.ShadowTransformer;
 import com.example.acer.monperabook.ImageSlider.SliderIndicator;
 import com.example.acer.monperabook.ImageSlider.SliderPagerAdapter;
 import com.example.acer.monperabook.ImageSlider.SliderView;
 import com.example.acer.monperabook.MainActivity;
-import com.example.acer.monperabook.MainMenuActivity;
 import com.example.acer.monperabook.MuseumProfileActivity;
 import com.example.acer.monperabook.R;
 import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
-import com.example.acer.monperabook.Slider.CardFragmentPagerAdapter;
-import com.example.acer.monperabook.Slider.CardItem;
-import com.example.acer.monperabook.Slider.CardPagerAdapter;
 import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
@@ -145,6 +139,8 @@ public class MenuFragment extends Fragment {
                 return inflater.inflate(R.layout.activity_main_menu, container, false);
             case "other":
                 return inflater.inflate(R.layout.activity_other_menu, container, false);
+            case "local":
+                return inflater.inflate(R.layout.activity_artifact_favorites, container, false);
             default:
                 return inflater.inflate(R.layout.menu_fragment, container, false);
         }
@@ -244,39 +240,80 @@ public class MenuFragment extends Fragment {
 
             case "local":
 
-                artifactsListView = (ListView) view.findViewById(R.id.list);
-                db = new DBHelper(view.getContext());
+                ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+                ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentActivity.getSupportFragmentManager());
 
-                Cursor c = db.select("artifact_favorites");
-                while (c.moveToNext()) {
-                    String code = c.getString(c.getColumnIndex("kode_artifak"));
-                    String title = c.getString(c.getColumnIndex("nama"));
-                    String description = c.getString(c.getColumnIndex("deskripsi"));
-                    Artifact artifact = new Artifact(code, title, description);
-                    localArtifacts.add(artifact);
-                }
+                adapter.addFragment(new MyFavoriteFragment(), "Favorit Saya");
+                adapter.addFragment(new VisitorFragment(), "Favorit Pengunjung");
+                viewPager.setAdapter(adapter);
 
-                artifactsAdapter = new ArtifactsAdapter(view.getContext(), localArtifacts);
-                artifactsAdapter.notifyDataSetChanged();
-                artifactsListView.setAdapter(artifactsAdapter);
+                TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+                tabLayout.setupWithViewPager(viewPager);
 
-                // attach artifact item click listener
-                artifactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView parent, View view, int position, long id) {
-                        Intent artifactDetailsIntent = new Intent(view.getContext(), ArtifactDetailsActivity.class);
-                        Artifact artifact = (Artifact) artifactsListView.getItemAtPosition(position);
-
-                        artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
-                        artifactDetailsIntent.putExtra("nama", artifact.getTitle());
-                        artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
-                        artifactDetailsIntent.putExtra("local", true);
-                        artifactDetailsIntent.putExtra("foto", artifact.getImages());
-                        startActivity(artifactDetailsIntent);
-                    }
-                });
+//                artifactsListView = (ListView) view.findViewById(R.id.list);
+//                db = new DBHelper(view.getContext());
+//
+//                Cursor c = db.select("artifact_favorites");
+//                while (c.moveToNext()) {
+//                    String code = c.getString(c.getColumnIndex("kode_artifak"));
+//                    String title = c.getString(c.getColumnIndex("nama"));
+//                    String description = c.getString(c.getColumnIndex("deskripsi"));
+//                    Artifact artifact = new Artifact(code, title, description);
+//                    localArtifacts.add(artifact);
+//                }
+//
+//                artifactsAdapter = new ArtifactsAdapter(view.getContext(), localArtifacts);
+//                artifactsAdapter.notifyDataSetChanged();
+//                artifactsListView.setAdapter(artifactsAdapter);
+//
+//                // attach artifact item click listener
+//                artifactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView parent, View view, int position, long id) {
+//                        Intent artifactDetailsIntent = new Intent(view.getContext(), ArtifactDetailsActivity.class);
+//                        Artifact artifact = (Artifact) artifactsListView.getItemAtPosition(position);
+//
+//                        artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
+//                        artifactDetailsIntent.putExtra("nama", artifact.getTitle());
+//                        artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
+//                        artifactDetailsIntent.putExtra("local", true);
+//                        artifactDetailsIntent.putExtra("foto", artifact.getImages());
+//                        startActivity(artifactDetailsIntent);
+//                    }
+//                });
                 break;
         }
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        private final List<android.support.v4.app.Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(android.support.v4.app.Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
     }
 
     @Override

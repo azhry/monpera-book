@@ -8,15 +8,18 @@ import java.util.List;
 
 public class Challenge {
 
+    private int id;
     private String question;
-    private List<String> answers;
+    private List<Answer> answers;
 
-    public Challenge(String question, List<String> answers) {
+    public Challenge(int id, String question, List<Answer> answers) {
         this.question = question;
         this.answers = answers;
+        this.id = id;
     }
 
+    public int getId() { return this.id; }
     public String getQuestion() { return this.question; }
-    public List<String> getAnswers() { return this.answers; }
+    public List<Answer> getAnswers() { return this.answers; }
 
 }

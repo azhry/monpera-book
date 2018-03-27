@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.example.acer.monperabook.CustomAdapter.Answer;
 import com.example.acer.monperabook.CustomAdapter.Challenge;
 import com.example.acer.monperabook.R;
 
@@ -70,15 +71,21 @@ public class ChallengePagerAdapter extends PagerAdapter {
     private void bind(final Challenge item, View view, final int position) {
         TextView questionTextView = (TextView) view.findViewById(R.id.question);
         questionTextView.setText(item.getQuestion());
-        List<String> answers = item.getAnswers();
+        List<Answer> answers = item.getAnswers();
         RadioButton radioButton1 = (RadioButton) view.findViewById(R.id.answer_1);
         RadioButton radioButton2 = (RadioButton) view.findViewById(R.id.answer_2);
         RadioButton radioButton3 = (RadioButton) view.findViewById(R.id.answer_3);
         RadioButton radioButton4 = (RadioButton) view.findViewById(R.id.answer_4);
-        radioButton1.setText(answers.get(0));
-        radioButton2.setText(answers.get(1));
-        radioButton3.setText(answers.get(2));
-        radioButton4.setText(answers.get(3));
+        radioButton1.setText(answers.get(0).getAnswer());
+        radioButton2.setText(answers.get(1).getAnswer());
+        radioButton3.setText(answers.get(2).getAnswer());
+        radioButton4.setText(answers.get(3).getAnswer());
+
+        radioButton1.setTag(item.getId());
+        radioButton2.setTag(item.getId());
+        radioButton3.setTag(item.getId());
+        radioButton4.setTag(item.getId());
+
     }
 
 }

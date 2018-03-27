@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -27,8 +28,10 @@ public class ChallengeFinishActivity extends AppCompatActivity {
     private ImageView cameraButton;
     private ImageView saveButton;
     private ImageView selfieImage;
+    private TextView scoreText;
     private Bitmap generatedImage;
     private Context mContext;
+    private Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +41,14 @@ public class ChallengeFinishActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorActionBarContent));
         mContext = this;
+        extras = getIntent().getExtras();
 
         refreshButton = (ImageView) findViewById(R.id.refreshButton);
         cameraButton = (ImageView) findViewById(R.id.cameraButton);
         saveButton = (ImageView) findViewById(R.id.saveButton);
         selfieImage = (ImageView) findViewById(R.id.selfieImage);
+        scoreText = (TextView) findViewById(R.id.skor);
+        scoreText.setText("Skor: " + String.valueOf(extras.getFloat("score")) + "%");
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override

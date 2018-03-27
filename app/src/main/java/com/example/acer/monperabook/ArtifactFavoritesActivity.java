@@ -41,60 +41,60 @@ public class ArtifactFavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artifact_favorites);
 
-        mContext = this;
-        db = new DBHelper(mContext);
-
-        searchEditText = (EditText) findViewById(R.id.search);
-
-        mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
-        mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return false;
-            }
-        });
-
-        artifactsListView = (ListView) findViewById(R.id.list);
-
-        // attach artifact item click listener
-        artifactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                Intent artifactDetailsIntent = new Intent(mContext, ArtifactDetailsActivity.class);
-                Artifact artifact = (Artifact) artifactsListView.getItemAtPosition(position);
-
-                artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
-                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
-                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
-                artifactDetailsIntent.putExtra("local", true);
-
-                startActivity(artifactDetailsIntent);
-            }
-        });
-
-        Cursor c = db.select("artifact_favorites");
-        while (c.moveToNext()) {
-            String code = c.getString(c.getColumnIndex("kode_artifak"));
-            String title = c.getString(c.getColumnIndex("nama"));
-            String description = c.getString(c.getColumnIndex("deskripsi"));
-            Artifact artifact = new Artifact(code, title, description);
-            artifacts.add(artifact);
-        }
-
-        artifactsAdapter = new ArtifactsAdapter(mContext, artifacts);
-        artifactsListView.setAdapter(artifactsAdapter);
-
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                String query = searchEditText.getText().toString();
-                artifactsAdapter.filter(query);
-            }
-        });
+//        mContext = this;
+//        db = new DBHelper(mContext);
+//
+//        searchEditText = (EditText) findViewById(R.id.search);
+//
+//        mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
+//        mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                return false;
+//            }
+//        });
+//
+//        artifactsListView = (ListView) findViewById(R.id.list);
+//
+//        // attach artifact item click listener
+//        artifactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView parent, View view, int position, long id) {
+//                Intent artifactDetailsIntent = new Intent(mContext, ArtifactDetailsActivity.class);
+//                Artifact artifact = (Artifact) artifactsListView.getItemAtPosition(position);
+//
+//                artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
+//                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
+//                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
+//                artifactDetailsIntent.putExtra("local", true);
+//
+//                startActivity(artifactDetailsIntent);
+//            }
+//        });
+//
+//        Cursor c = db.select("artifact_favorites");
+//        while (c.moveToNext()) {
+//            String code = c.getString(c.getColumnIndex("kode_artifak"));
+//            String title = c.getString(c.getColumnIndex("nama"));
+//            String description = c.getString(c.getColumnIndex("deskripsi"));
+//            Artifact artifact = new Artifact(code, title, description);
+//            artifacts.add(artifact);
+//        }
+//
+//        artifactsAdapter = new ArtifactsAdapter(mContext, artifacts);
+//        artifactsListView.setAdapter(artifactsAdapter);
+//
+//        searchEditText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                String query = searchEditText.getText().toString();
+//                artifactsAdapter.filter(query);
+//            }
+//        });
     }
 
 }
