@@ -61,12 +61,25 @@ public class MyFavoriteFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
+        if (view != null) {
+            renderUI(view);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+    }
+
+    private void renderUI(View view) {
         artifactLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         artifactRecyclerView = (RecyclerView)getActivity().findViewById(R.id.artifact_recycler_view);
         artifactRecyclerView.setLayoutManager(artifactLayoutManager);
         getMyFavorite(view);
     }
-
 
     private void getMyFavorite(final View view) {
 
