@@ -17,7 +17,7 @@ import java.util.Set;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "monpera_book";
-    public static final int DB_VERSION = 8;
+    public static final int DB_VERSION = 9;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -53,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sql.append("CREATE TABLE note(");
         sql.append("id_note INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ");
         sql.append("kode_artifak VARCHAR, ");
+        sql.append("waktu TEXT, ");
         sql.append("note TEXT);");
         db.execSQL(sql.toString());
     }

@@ -1,24 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_other"
-        android:title="Other"
-        android:icon="@drawable/ic_home_black"/>
-
-    <item
         android:id="@+id/menu_home"
         android:title="Home"
         android:icon="@drawable/ic_home_black"/>
 
     <item
-        android:id="@+id/menu_favorite"
-        android:title="Favorite"
-        android:icon="@drawable/ic_favorite_black"/>
+        android:id="@+id/menu_tantangan"
+        android:title="Challenge"
+        android:icon="@drawable/tantangan"/>
 
     <item
         android:id="@+id/menu_scan"
-        android:title="Scan QR"
-        android:icon="@drawable/ic_qr_code" />
+        android:title="QR Code"
+        android:icon="@drawable/ic_qr_code"/>
+
+    <item
+        android:id="@+id/menu_favorite"
+        android:title="Favorite"
+        android:icon="@drawable/ic_favorite_black" />
 
     <item
         android:id="@+id/menu_more"

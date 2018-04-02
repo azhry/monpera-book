@@ -104,16 +104,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectFragment(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_other:
+            case R.id.menu_home:
                 mBottomNav.getMenu().getItem(0).setChecked(true);
                 currentFragment = MenuFragment.newInstance("other");
                 break;
-            case R.id.menu_home:
-                mBottomNav.getMenu().getItem(1).setChecked(true);
-                currentFragment = MenuFragment.newInstance("remote");
-                break;
             case R.id.menu_favorite:
-                mBottomNav.getMenu().getItem(2).setChecked(true);
+                mBottomNav.getMenu().getItem(3).setChecked(true);
                 currentFragment = MenuFragment.newInstance("local");
                 break;
             case R.id.menu_more:
@@ -127,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
         if (mSelectedItem == R.id.menu_scan) {
             Intent scanQRIntent = new Intent(mContext, CameraActivity.class);
             startActivity(scanQRIntent);
+        } else if (mSelectedItem == R.id.menu_tantangan) {
+            Intent tantanganIntent = new Intent(mContext, ChallengeActivity.class);
+            startActivity(tantanganIntent);
         } else {
             if (currentFragment != null) {
                 FragmentManager fm = getFragmentManager();

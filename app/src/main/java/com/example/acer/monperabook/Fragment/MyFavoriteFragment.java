@@ -11,13 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.acer.monperabook.CustomAdapter.Artifact;
 import com.example.acer.monperabook.CustomAdapter.ArtifactsRecyclerAdapter;
 import com.example.acer.monperabook.R;
+import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
 
 import org.json.JSONArray;
@@ -25,6 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Azhary Arliansyah on 25/03/2018.
@@ -83,18 +88,17 @@ public class MyFavoriteFragment extends Fragment {
 
     private void getMyFavorite(final View view) {
 
-        String requestURL = mEndpoint + "artifak/most-favorite";
-        JsonObjectRequest getFavorites = new JsonObjectRequest(Request.Method.GET, requestURL, null,
-                new Response.Listener<JSONObject>() {
+        String requestURL = mEndpoint + "artifak/my-favorite";
+        StringRequest getFavorites = new StringRequest(Request.Method.POST, requestURL,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
                         try {
-                            boolean error = response.getBoolean("error");
+                            JSONObject res = new JSONObject(response);
+                            boolean error = res.getBoolean("error");
                             if (!error) {
-
-                                Log.e(TAG, "my");
                                 artifacts.clear();
-                                JSONArray artifactList = response.getJSONArray("data");
+                                JSONArray artifactList = res.getJSONArray("data");
                                 for (int i = 0; i < artifactList.length(); i++) {
 
                                     JSONObject artifact = artifactList.getJSONObject(i);
@@ -124,7 +128,23 @@ public class MyFavoriteFragment extends Fragment {
                             Log.e(TAG, msg);
                         }
                     }
-                });
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                SessionManager sessionManager = new SessionManager(getContext());
+                params.put("id_user", sessionManager.getUserId());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                SessionManager sessionManager = new SessionManager(getContext());
+                params.put("id_user", sessionManager.getUserId());
+                return params;
+            }
+        };
         AppSingleton.getInstance(view.getContext()).addToRequestQueue(getFavorites, TAG);
 
     }

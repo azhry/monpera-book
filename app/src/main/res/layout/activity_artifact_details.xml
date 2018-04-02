@@ -170,6 +170,12 @@
                         android:text="Ini adalah informasi mengenai koleksi museum, tentang sejarah ataupun deskripsi benda di museum. Terdapat informasi jenis koleksi, nama benda, serta informasi ruang mana benda tersebut dipajang. Setiap satu objek dapat difavoritkan, sehingga tidak perlu harus di-scan ulang apabila user hendak melihatnya kembali di lain waktu"
                         android:textSize="15sp"/>
 
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/catatanRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="vertical" />
+
                 </LinearLayout>
 
             </RelativeLayout>

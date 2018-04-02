@@ -18,6 +18,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -46,6 +48,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.acer.monperabook.AsyncTask.DownloadImageTask;
+import com.example.acer.monperabook.CustomAdapter.CatatanRecyclerAdapter;
 import com.example.acer.monperabook.ImageSlider.FragmentSlider;
 import com.example.acer.monperabook.ImageSlider.SliderIndicator;
 import com.example.acer.monperabook.ImageSlider.SliderPagerAdapter;
@@ -68,7 +71,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +113,8 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
 
     private SliderView sliderView;
     private LinearLayout mLinearLayout;
+    private CatatanRecyclerAdapter catatanRecyclerAdapter;
+    private RecyclerView catatanRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -131,11 +138,25 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
         selfieButton            = (ImageView)findViewById(R.id.selfieButton);
         shareButton             = (ImageView)findViewById(R.id.shareButton);
         addNoteButton           = (ImageView)findViewById(R.id.addNoteButton);
-        likeCountText           = (TextView) findViewById(R.id.likeCountText);
+        likeCountText           = (TextView)findViewById(R.id.likeCountText);
+        catatanRecyclerView     = (RecyclerView)findViewById(R.id.catatanRecyclerView);
 
         mContext                = ArtifactDetailsActivity.this;
         mEndpoint               = getString(R.string.server_ip);
         db                      = new DBHelper(mContext);
+
+        ArrayList<String> catatan = new ArrayList<>();
+        ArrayList<String> dateTime = new ArrayList<>();
+        Cursor getNote = db.select("note", "kode_artifak='" + code + "'");
+        while(getNote.moveToNext()) {
+            catatan.add(getNote.getString(getNote.getColumnIndex("note")));
+            dateTime.add(getNote.getString(getNote.getColumnIndex("waktu")));
+        }
+
+        catatanRecyclerAdapter  = new CatatanRecyclerAdapter(catatan, dateTime, R.layout.catatan_list);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        catatanRecyclerView.setLayoutManager(mLayoutManager);
+        catatanRecyclerView.setAdapter(catatanRecyclerAdapter);
 
         likeCountText.setText("Difavoritkan oleh " + likes + " pengunjung");
 
@@ -150,16 +171,11 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String note = addNoteEditText.getText().toString();
-                Cursor checkNote = db.select("note", "kode_artifak='" + code + "'");
                 Map<String, String> data = new HashMap<>();
                 data.put("kode_artifak", code);
                 data.put("note", note);
-                if (checkNote.moveToFirst()) {
-                    db.update("note", data,
-                            "id_note=" + checkNote.getString(checkNote.getColumnIndex("id_note")));
-                } else {
-                    db.insert("note", data);
-                }
+                data.put("waktu", getCurrentTime());
+                db.insert("note", data);
 
                 showNoteDialog(note);
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -425,6 +441,10 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
                 .setCancelable(true);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private String getCurrentTime() {
+        return new SimpleDateFormat("HH:mm dd-MM-yyyy").format(new Date());
     }
 
 }
