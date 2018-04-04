@@ -70,6 +70,7 @@ public class MainMenuActivity extends AppCompatActivity {
         context = getApplicationContext();
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorActionBarContent));
         menuRecyclerView = (RecyclerView)findViewById(R.id.menu_recycler_view);
         menuRecyclerView.setLayoutManager(new GridLayoutManager(context, SPAN_COUNT));

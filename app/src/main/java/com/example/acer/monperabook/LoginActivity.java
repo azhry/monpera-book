@@ -229,7 +229,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 String name = data.getString("name");
                                 SessionManager sessionManager = new SessionManager(mContext);
                                 sessionManager.createLoginSession(String.valueOf(userId), username, email, name);
-                                Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 String name = data.getString("name");
                                 SessionManager sessionManager = new SessionManager(mContext);
                                 sessionManager.createLoginSession(String.valueOf(userId), username, email, name);
-                                Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             }

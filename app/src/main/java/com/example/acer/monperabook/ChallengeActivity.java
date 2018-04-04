@@ -2,6 +2,7 @@ package com.example.acer.monperabook;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.acer.monperabook.CustomAdapter.Answer;
 import com.example.acer.monperabook.CustomAdapter.Challenge;
+import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.Singleton.AppSingleton;
 import com.example.acer.monperabook.Slider.CardFragmentPagerAdapter;
 import com.example.acer.monperabook.Slider.ChallengePagerAdapter;
@@ -50,6 +52,7 @@ public class ChallengeActivity extends AppCompatActivity {
     private Button submitButton;
     private String mEndpoint;
     private Context mContext;
+    private DBHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class ChallengeActivity extends AppCompatActivity {
         mEndpoint = getString(R.string.server_ip);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mChallengePagerAdapter = new ChallengePagerAdapter(this);
+        db = new DBHelper(mContext);
 
         getQuestion();
 
@@ -81,18 +85,23 @@ public class ChallengeActivity extends AppCompatActivity {
                         try {
                             final JSONArray questions = response.getJSONArray("data");
                             for (int i = 0; i < questions.length(); i++) {
-                                JSONArray answers = questions.getJSONObject(i).getJSONArray("jawaban");
                                 List<Answer> answerList = new ArrayList<>();
-                                for (int j = 0; j < answers.length(); j++) {
-                                    answerList.add(new Answer(answers.getJSONObject(j).getInt("id_pertanyaan"),
-                                            answers.getJSONObject(j).getString("jawaban"),
-                                            answers.getJSONObject(j).getInt("status")));
+                                Cursor record = db.select("question",
+                                        "kode_artifak='"
+                                                + questions.getJSONObject(i).getJSONObject("pertanyaan").getString("kode_artifak") + "'");
+                                if (record.moveToFirst()) {
+                                    JSONArray answers = questions.getJSONObject(i).getJSONArray("jawaban");
+                                    for (int j = 0; j < answers.length(); j++) {
+                                        answerList.add(new Answer(answers.getJSONObject(j).getInt("id_pertanyaan"),
+                                                answers.getJSONObject(j).getString("jawaban"),
+                                                answers.getJSONObject(j).getInt("status")));
+                                    }
+                                    JSONObject question = new JSONObject(questions.getJSONObject(i)
+                                            .getString("pertanyaan"));
+                                    mChallengePagerAdapter.addChallenge(new Challenge(question.getInt("id_pertanyaan"),
+                                            question.getString("pertanyaan"),
+                                            answerList));
                                 }
-                                JSONObject question = new JSONObject(questions.getJSONObject(i)
-                                        .getString("pertanyaan"));
-                                mChallengePagerAdapter.addChallenge(new Challenge(question.getInt("id_pertanyaan"),
-                                        question.getString("pertanyaan"),
-                                        answerList));
                             }
 
                             mViewPager.setAdapter(mChallengePagerAdapter);
