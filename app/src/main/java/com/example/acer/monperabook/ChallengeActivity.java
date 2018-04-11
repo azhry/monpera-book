@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -53,6 +54,8 @@ public class ChallengeActivity extends AppCompatActivity {
     private String mEndpoint;
     private Context mContext;
     private DBHelper db;
+    private RelativeLayout noChallengeLayout;
+    private Button scanButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,21 @@ public class ChallengeActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mChallengePagerAdapter = new ChallengePagerAdapter(this);
         db = new DBHelper(mContext);
+        prevButton = (Button) findViewById(R.id.prevButton);
+        nextButton = (Button) findViewById(R.id.nextButton);
+        submitButton = (Button) findViewById(R.id.submitButton);
+
+        noChallengeLayout = (RelativeLayout) findViewById(R.id.noChallengeLayout);
+        scanButton = (Button) findViewById(R.id.scanButton);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent scanIntent = new Intent(ChallengeActivity.this, CameraActivity.class);
+                startActivity(scanIntent);
+            }
+        });
+        noChallengeLayout.setVisibility(View.GONE);
+        submitButton.setVisibility(View.GONE);
 
         getQuestion();
 
@@ -84,12 +102,14 @@ public class ChallengeActivity extends AppCompatActivity {
 
                         try {
                             final JSONArray questions = response.getJSONArray("data");
+                            int numQuestion = 0;
                             for (int i = 0; i < questions.length(); i++) {
                                 List<Answer> answerList = new ArrayList<>();
                                 Cursor record = db.select("question",
                                         "kode_artifak='"
                                                 + questions.getJSONObject(i).getJSONObject("pertanyaan").getString("kode_artifak") + "'");
                                 if (record.moveToFirst()) {
+                                    noChallengeLayout.setVisibility(View.VISIBLE);
                                     JSONArray answers = questions.getJSONObject(i).getJSONArray("jawaban");
                                     for (int j = 0; j < answers.length(); j++) {
                                         answerList.add(new Answer(answers.getJSONObject(j).getInt("id_pertanyaan"),
@@ -101,6 +121,10 @@ public class ChallengeActivity extends AppCompatActivity {
                                     mChallengePagerAdapter.addChallenge(new Challenge(question.getInt("id_pertanyaan"),
                                             question.getString("pertanyaan"),
                                             answerList));
+                                    numQuestion++;
+
+                                } else {
+                                    noChallengeLayout.setVisibility(View.GONE);
                                 }
                             }
 
@@ -109,9 +133,6 @@ public class ChallengeActivity extends AppCompatActivity {
                             mChallengePagerAdapter.notifyDataSetChanged();
 
                             final int viewPagerSize = mChallengePagerAdapter.getCount();
-                            prevButton = (Button) findViewById(R.id.prevButton);
-                            nextButton = (Button) findViewById(R.id.nextButton);
-                            submitButton = (Button) findViewById(R.id.submitButton);
 
                             prevButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -131,29 +152,17 @@ public class ChallengeActivity extends AppCompatActivity {
                                 }
                             });
 
+                            attachCheckEvent(numQuestion);
+                            final int finalNumQuestion = numQuestion;
+
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
 
-                                    int count = mViewPager.getChildCount();
-                                    final ArrayList<String> selectedRadioButton = new ArrayList<>();
-                                    final ArrayList<Object> questionId = new ArrayList<>();
-                                    for (int i = 0; i < count; i++) {
-                                        View cardView = mViewPager.getChildAt(i);
-                                        View linearLayoutView = ((ViewGroup)cardView).getChildAt(0);
-                                        View questionView = ((ViewGroup)linearLayoutView).getChildAt(1);
-                                        for (int j = 0; j < ((ViewGroup)questionView).getChildCount(); j++) {
-                                            View o = ((ViewGroup)questionView).getChildAt(j);
-                                            if (o instanceof RadioButton) {
-                                                if (((RadioButton)o).isChecked()) {
-                                                    selectedRadioButton.add(((RadioButton) o).getText().toString());
-                                                    questionId.add(((RadioButton) o).getTag());
-                                                }
-                                            }
-                                        }
-                                    }
+                                    final ArrayList<String> selectedRadioButton = getSelectedRadioButton();
+                                    final ArrayList<Object> questionId = getSelectedQuestion();
 
-                                    if (selectedRadioButton.size() == questions.length()) {
+                                    if (selectedRadioButton.size() == finalNumQuestion) {
                                         String requestUrl = mEndpoint + "pertanyaan/submit-jawaban";
                                         StringRequest submitAnswers =  new StringRequest(Request.Method.POST, requestUrl,
                                                 new Response.Listener<String>() {
@@ -229,6 +238,63 @@ public class ChallengeActivity extends AppCompatActivity {
         );
         AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(request, REQUEST_TAG);
 
+    }
+
+    private ArrayList<String> getSelectedRadioButton() {
+        int count = mViewPager.getChildCount();
+        ArrayList<String> selectedRadioButton = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            View cardView = mViewPager.getChildAt(i);
+            View linearLayoutView = ((ViewGroup)cardView).getChildAt(0);
+            View questionView = ((ViewGroup)linearLayoutView).getChildAt(1);
+            for (int j = 0; j < ((ViewGroup)questionView).getChildCount(); j++) {
+                View o = ((ViewGroup)questionView).getChildAt(j);
+                if (o instanceof RadioButton) {
+                    if (((RadioButton)o).isChecked()) {
+                        selectedRadioButton.add(((RadioButton) o).getText().toString());
+                    }
+                }
+            }
+        }
+
+        return selectedRadioButton;
+    }
+
+    private ArrayList<Object> getSelectedQuestion() {
+        int count = mViewPager.getChildCount();
+        ArrayList<Object> questionId = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            View cardView = mViewPager.getChildAt(i);
+            View linearLayoutView = ((ViewGroup)cardView).getChildAt(0);
+            View questionView = ((ViewGroup)linearLayoutView).getChildAt(1);
+            for (int j = 0; j < ((ViewGroup)questionView).getChildCount(); j++) {
+                View o = ((ViewGroup)questionView).getChildAt(j);
+                if (o instanceof RadioButton) {
+                    if (((RadioButton)o).isChecked()) {
+                        questionId.add(((RadioButton) o).getTag());
+                    }
+                }
+            }
+        }
+
+        return questionId;
+    }
+
+    private void attachCheckEvent(final int numQuestion) {
+        int count = mViewPager.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View cardView = mViewPager.getChildAt(i);
+            View linearLayoutView = ((ViewGroup)cardView).getChildAt(0);
+            RadioGroup questionView = (RadioGroup)((ViewGroup)linearLayoutView).getChildAt(1);
+            questionView.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    if (getSelectedRadioButton().size() == numQuestion) {
+                        submitButton.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
     }
 
 

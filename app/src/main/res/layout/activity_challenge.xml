@@ -16,6 +16,31 @@
 
         </include>
 
+        <RelativeLayout
+            android:id="@+id/noChallengeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:padding="30dp"
+                android:textSize="17sp"
+                android:textAlignment="center"
+                android:id="@+id/noChallengeText"
+                android:text="Belum ada pertanyaan tantangan untuk anda. Ayo coba scan koleksi sekarang"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scanButton"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="Scan"/>
+
+        </RelativeLayout>
+
         <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
             android:layout_height="380dp"
