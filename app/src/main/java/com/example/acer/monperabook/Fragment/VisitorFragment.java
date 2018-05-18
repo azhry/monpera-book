@@ -82,7 +82,7 @@ public class VisitorFragment extends Fragment {
 
     private void getVisitorFavorite(final View view) {
 
-        String requestURL = mEndpoint + "artifak/most-favorite";
+        String requestURL = mEndpoint + "artifak/most-favorite?limit=10";
         JsonObjectRequest getFavorites = new JsonObjectRequest(Request.Method.GET, requestURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override

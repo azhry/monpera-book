@@ -47,6 +47,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="title"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:textAllCaps="true"
                     android:textSize="16sp"/>
 
