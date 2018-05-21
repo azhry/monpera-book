@@ -14,6 +14,9 @@ import com.bumptech.glide.Glide;
 import com.example.acer.monperabook.ArtifactDetailsActivity;
 import com.example.acer.monperabook.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 /**
@@ -42,25 +45,36 @@ public class CollectionsRecyclerAdapter extends RecyclerView.Adapter<Collections
         final Artifact artifact = artifactsList.get(position);
         holder.artifactTitle.setText(artifact.getTitle());
         holder.artifactLike.setText(artifact.getLike());
-        String URL = context.getString(R.string.server_ip) + "/img/" + artifact.getCode() + ".jpg";
-        Glide.with(context)
-                .load(URL)
-                .into(holder.artifactThumbnail);
-
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent artifactDetailsIntent = new Intent(view.getContext(), ArtifactDetailsActivity.class);
-
-                artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
-                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
-                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
-                artifactDetailsIntent.putExtra("foto", artifact.getImages());
-                artifactDetailsIntent.putExtra("like", artifact.getLike());
-
-                view.getContext().startActivity(artifactDetailsIntent);
+        JSONArray photos = null;
+        try {
+            photos = new JSONArray(artifact.getImages());
+            String URL = "";
+            if (photos.length() > 0) {
+                URL = context.getString(R.string.server_ip) + "/img/" + photos.getString(0);
             }
-        });
+            Glide.with(context)
+                    .load(URL)
+                    .into(holder.artifactThumbnail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+//        holder.cardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent artifactDetailsIntent = new Intent(view.getContext(), ArtifactDetailsActivity.class);
+//
+//                artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
+//                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
+//                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
+//                artifactDetailsIntent.putExtra("foto", artifact.getImages());
+//                artifactDetailsIntent.putExtra("like", artifact.getLike());
+//                artifactDetailsIntent.putExtra("kategori", artifact.getCategory());
+//
+//                view.getContext().startActivity(artifactDetailsIntent);
+//            }
+//        });
     }
 
     @Override

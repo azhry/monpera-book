@@ -104,7 +104,8 @@ public class MyFavoriteFragment extends Fragment {
                                     JSONObject artifact = artifactList.getJSONObject(i);
                                     artifacts.add(new Artifact(artifact.getString("kode_artifak"),
                                             artifact.getString("nama"), artifact.getString("deskripsi"),
-                                            artifact.getString("like"), artifact.getString("foto")));
+                                            artifact.getString("like"), artifact.getString("foto"),
+                                            artifact.getString("kategori")));
 
                                 }
 

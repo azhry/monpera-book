@@ -21,6 +21,9 @@ import com.bumptech.glide.request.target.Target;
 import com.example.acer.monperabook.ArtifactDetailsActivity;
 import com.example.acer.monperabook.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 /**
@@ -50,39 +53,48 @@ public class ArtifactsRecyclerAdapter  extends RecyclerView.Adapter<ArtifactsRec
 
         holder.artifactTitle.setText(artifact.getTitle());
         holder.artifactLike.setText("Difavoritkan oleh " + artifact.getLike() + " pengunjung");
-        String URL = context.getString(R.string.server_ip) + "/img/" + artifact.getCode() + ".jpg";
-        Glide.with(context)
-                .load(URL)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        holder.thumbnailProgressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.thumbnailProgressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.artifactThumbnail);
-
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent artifactDetailsIntent = new Intent(view.getContext(), ArtifactDetailsActivity.class);
-
-                artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
-                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
-                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
-                artifactDetailsIntent.putExtra("foto", artifact.getImages());
-                artifactDetailsIntent.putExtra("like", artifact.getLike());
-
-                view.getContext().startActivity(artifactDetailsIntent);
+        try {
+            JSONArray photos = new JSONArray(artifact.getImages());
+            String URL = "";
+            if (photos.length() > 0) {
+                URL = context.getString(R.string.server_ip) + "/img/" + photos.getString(0);
             }
-        });
+            Glide.with(context)
+                    .load(URL)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Drawable> target, boolean isFirstResource) {
+                            holder.thumbnailProgressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            holder.thumbnailProgressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(holder.artifactThumbnail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+//        holder.cardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent artifactDetailsIntent = new Intent(view.getContext(), ArtifactDetailsActivity.class);
+//
+//                artifactDetailsIntent.putExtra("kode_artifak", artifact.getCode());
+//                artifactDetailsIntent.putExtra("nama", artifact.getTitle());
+//                artifactDetailsIntent.putExtra("deskripsi", artifact.getDescription());
+//                artifactDetailsIntent.putExtra("foto", artifact.getImages());
+//                artifactDetailsIntent.putExtra("like", artifact.getLike());
+//
+//                view.getContext().startActivity(artifactDetailsIntent);
+//            }
+//        });
     }
 
     @Override
@@ -97,11 +109,13 @@ public class ArtifactsRecyclerAdapter  extends RecyclerView.Adapter<ArtifactsRec
         protected TextView artifactLike;
         protected ImageView artifactThumbnail;
         protected CardView cardView;
+        protected TextView artifactCategory;
 
         public ArtifactHolder(View itemView) {
             super(itemView);
             artifactTitle = (TextView) itemView.findViewById(R.id.titles);
             artifactLike = (TextView) itemView.findViewById(R.id.favorite_count);
+            artifactCategory = (TextView) itemView.findViewById(R.id.category);
             artifactThumbnail = (ImageView) itemView.findViewById(R.id.thumbnail);
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             thumbnailProgressBar = (ProgressBar) itemView.findViewById(R.id.progress);

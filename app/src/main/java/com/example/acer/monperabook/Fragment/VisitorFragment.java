@@ -91,7 +91,6 @@ public class VisitorFragment extends Fragment {
                             boolean error = response.getBoolean("error");
                             if (!error) {
 
-                                Log.e(TAG, "visitor");
                                 artifacts.clear();
                                 JSONArray artifactList = response.getJSONArray("data");
                                 for (int i = 0; i < artifactList.length(); i++) {
@@ -99,7 +98,8 @@ public class VisitorFragment extends Fragment {
                                     JSONObject artifact = artifactList.getJSONObject(i);
                                     artifacts.add(new Artifact(artifact.getString("kode_artifak"),
                                             artifact.getString("nama"), artifact.getString("deskripsi"),
-                                            artifact.getString("like"), artifact.getString("foto")));
+                                            artifact.getString("like"), artifact.getString("foto"),
+                                            artifact.getString("kategori")));
 
                                 }
 

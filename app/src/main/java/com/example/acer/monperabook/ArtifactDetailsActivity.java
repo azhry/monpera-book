@@ -89,6 +89,7 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
 
     private Bundle extras;
     private TextView title;
+    private TextView category;
     private TextView description;
     private Context mContext;
     private String mEndpoint;
@@ -130,6 +131,7 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
         images                  = extras.getString("foto");
         likes                   = extras.getString("like");
         title                   = (TextView)findViewById(R.id.titles);
+        category                = (TextView)findViewById(R.id.category);
         description             = (TextView)findViewById(R.id.description);
         addNoteEditText         = (EditText)findViewById(R.id.addNoteEditText);
         showAllNoteText         = (TextView)findViewById(R.id.showAllNotes);
@@ -265,6 +267,7 @@ public class ArtifactDetailsActivity extends AppCompatActivity {
 
         title.setText(extras.getString("nama"));
         description.setText(extras.getString("deskripsi"));
+        category.setText(extras.getString("kategori"));
     }
 
     @Override

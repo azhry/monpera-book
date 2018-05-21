@@ -676,7 +676,8 @@ public class MenuFragment extends Fragment {
                                 String imgUrl = mEndpoint + "img/" + thumbnailUrl.getString(0);
                                 popularCollections.add(new Artifact(artifact.getString("kode_artifak"),
                                         artifact.getString("nama"), artifact.getString("deskripsi"),
-                                        artifact.getString("like"), artifact.getString("foto")));
+                                        artifact.getString("like"), artifact.getString("foto"),
+                                        artifact.getString("kategori")));
                             }
 
                             popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,

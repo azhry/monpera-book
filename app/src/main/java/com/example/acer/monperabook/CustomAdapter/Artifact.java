@@ -11,6 +11,7 @@ public class Artifact {
     private String description;
     private String like;
     private String images;
+    private String category;
 
     public Artifact(String code, String title, String description) {
         this.code = code;
@@ -18,6 +19,7 @@ public class Artifact {
         this.description = description;
         this.like = "0";
         this.images = "";
+        this.category = "";
     }
 
     public Artifact(String code, String title, String description, String like) {
@@ -26,6 +28,7 @@ public class Artifact {
         this.description = description;
         this.like = like;
         this.images = "";
+        this.category = "";
     }
 
     public Artifact(String code, String title, String description, String like, String images) {
@@ -34,6 +37,16 @@ public class Artifact {
         this.description = description;
         this.like = like;
         this.images = images;
+        this.category = "";
+    }
+
+    public Artifact(String code, String title, String description, String like, String images, String category) {
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.like = like;
+        this.images = images;
+        this.category = category;
     }
 
     public String getTitle() {
@@ -49,4 +62,6 @@ public class Artifact {
     public String getLike() { return this.like; }
 
     public String getImages() { return this.images; }
+
+    public String getCategory() { return this.category; }
 }

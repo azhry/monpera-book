@@ -108,7 +108,7 @@ public class CameraActivity extends AppCompatActivity implements ZXingScannerVie
                                     artifactDetailsIntent.putExtra("deskripsi", artifact.getString("deskripsi"));
                                     artifactDetailsIntent.putExtra("foto", artifact.getString("foto"));
                                     artifactDetailsIntent.putExtra("like", artifact.getString("like"));
-
+                                    artifactDetailsIntent.putExtra("kategori", artifact.getString("kategori"));
                                     mScannerView.stopCamera();
                                     startActivity(artifactDetailsIntent);
                                 } else {
