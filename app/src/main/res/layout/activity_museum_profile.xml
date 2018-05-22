@@ -50,9 +50,9 @@
 
                             <ImageView
                                 android:layout_margin="12dp"
-                                android:layout_width="200dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="200dp"
-                                android:src="@drawable/p200x200"/>
+                                android:src="@drawable/museum_smb"/>
 
                         </LinearLayout>
 
@@ -112,7 +112,9 @@
                                 android:id="@+id/museum_profile"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Text profile museum"/>
+                                android:text="Museum Sultan Mahmud Badaruddin II adalah museum yang terdapat di kota Palembang, Indonesia. Museum ini didirikan di dalam bangunan abad ke-19 yang sebelumnya merupakan kantor penduduk kolonial Sumatera Selatan.
+Dalam Museum Sultan Mahmud Badaruddin II Palembang terdapat 8 jenis koleksi benda yaitu dengan total 669 koleksi.
+"/>
 
                         </android.support.v7.widget.CardView>
 
@@ -161,7 +163,12 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Sejarah museum text"/>
+                                    android:text="Museum Sultan Mahmud Badaruddin II Palembang merupakan bangunan yang dibangun kembali setelah dibongkar habis, yang sebelumnya merupakan lokasi Benteng Kuto Lamo atau sering juga disebut Kuta Tengkuruk atau Kuta Batu. Pada sekitar tahun 1724-1758, lokasi Benteng Kuto Lamo pada bagian dalamnya berdiri Keraton Sultan Mahmud Badaruddin Jaya Wikramo atau Sultan Mahmud Badaruddin I.
+Tahun 1821, keraton ini mendapat serangan dari Pemerintah Hindia Belanda, yang kemudian dibongkar habis pada 7 Oktober 1823 atas perintah Reguring Commissaris Belanda, J.L. Van Seven Hoven. Pemerintah Kolonial ingin menghilangkan monumental Kesultanan Palembang dan membalas dendam atas dibakarnya Loji Sungai Aur oleh Sultan Mahmud Badaruddin II pada 1811. Bangunan ini selesai didirikan kembali pada 1825 dan selanjutnya dijadikan Komisariat Pemerintah Hindia Belanda untuk Sumatera Bagian Selatan, sekaligus sebagai kantor Residen.
+Dalam kurun dari 1942 gedung ini kemudian di kuasai Jepang hingga 1945. Setelah Proklamasi Kemerdekaan, gedung ini kembali pada Pemerintah Republik Indonesia. Selanjutnya pada 1949, gedung dijadikan kantor Teritorium II Sriwijaya dan dalam kurun 1960 – 1974 digunakan sebagai Resimen Induk IV Sriwijaya.
+Berdasarkan hasil penelitian dari Tim Arkeologi Nasional tahun 1988, pada lokasi ditemukan fondasi batu bara dari bangunan Kuto Lamo, di atas tumpukan balok-balok kayu yang terbakar. Menurut catatan, bangunan Benteng Kuto Lamo di masa Sultan Mahmud Badaruddin I (Jayo Wikramo) resmi ditempati pada hari Senin, 29 September 1737. Karena itu disimpulkan bahwa balok-balok tersebut tentunya sudah terlebih dulu ada. Nama Museum Sultan Mahmud Badaruddin II diabadikan untuk mengingat dan menghargai jasanya bagi Kota Palembang.
+Seiring dengan perjalanan waktu dan dinamika sejarah yang terjadi di kota Palembang, fungsi bangunan ini telah silih berganti, mulai dari markas Jepang pada masa pendudukan, Teritorium Kodam II Sriwijaya di awal kemerdekaan, yang kemudian berpindah pengelolaan ke Pemerintah Kota Palembang sebelum akhirnya menjadi museum.
+"/>
 
                             </android.support.v7.widget.CardView>
 
@@ -212,7 +219,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jadwal operasional text"/>
+                                android:text="Senin – Kamis	: 08.00 – 16.00\nSabtu – Minggu : 09.00 – 16.00"/>
 
                         </android.support.v7.widget.CardView>
 
@@ -264,7 +271,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Harga tiket masuk text"/>
+                                android:text="Pelajar/Mahasiswa	: Rp. 2.000,-\nUmum			: Rp. 5.000,-\nWisatawan		: Rp. 10.000,-"/>
 
                         </android.support.v7.widget.CardView>
 
@@ -316,7 +323,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Kontak text"/>
+                                android:text="(0711) 371202"/>
 
                         </android.support.v7.widget.CardView>
 

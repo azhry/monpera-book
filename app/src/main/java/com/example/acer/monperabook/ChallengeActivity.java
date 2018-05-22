@@ -56,6 +56,7 @@ public class ChallengeActivity extends AppCompatActivity {
     private DBHelper db;
     private RelativeLayout noChallengeLayout;
     private Button scanButton;
+    private RelativeLayout loadingTextLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,7 @@ public class ChallengeActivity extends AppCompatActivity {
         submitButton = (Button) findViewById(R.id.submitButton);
 
         noChallengeLayout = (RelativeLayout) findViewById(R.id.noChallengeLayout);
+        loadingTextLayout = (RelativeLayout) findViewById(R.id.loadingTextLayout);
         scanButton = (Button) findViewById(R.id.scanButton);
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +84,9 @@ public class ChallengeActivity extends AppCompatActivity {
                 startActivity(scanIntent);
             }
         });
-        noChallengeLayout.setVisibility(View.GONE);
+        mViewPager.setVisibility(View.GONE);
         submitButton.setVisibility(View.GONE);
+        noChallengeLayout.setVisibility(View.GONE);
 
         getQuestion();
 
@@ -109,7 +112,9 @@ public class ChallengeActivity extends AppCompatActivity {
                                         "kode_artifak='"
                                                 + questions.getJSONObject(i).getJSONObject("pertanyaan").getString("kode_artifak") + "'");
                                 if (record.moveToFirst()) {
-                                    noChallengeLayout.setVisibility(View.VISIBLE);
+                                    noChallengeLayout.setVisibility(View.GONE);
+                                    mViewPager.setVisibility(View.VISIBLE);
+                                    loadingTextLayout.setVisibility(View.GONE);
                                     JSONArray answers = questions.getJSONObject(i).getJSONArray("jawaban");
                                     for (int j = 0; j < answers.length(); j++) {
                                         answerList.add(new Answer(answers.getJSONObject(j).getInt("id_pertanyaan"),
@@ -123,9 +128,10 @@ public class ChallengeActivity extends AppCompatActivity {
                                             answerList));
                                     numQuestion++;
 
-                                } else {
-                                    noChallengeLayout.setVisibility(View.GONE);
                                 }
+//                                else {
+//                                    noChallengeLayout.setVisibility(View.VISIBLE);
+//                                }
                             }
 
                             mViewPager.setAdapter(mChallengePagerAdapter);

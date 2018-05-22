@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Museum SMB</string>
+    <string name="app_name">Panduan Museum SMB II Palembang</string>
     <string name="server_ip">http://dezainlacg.azurewebsites.net/</string>
     <!--<string name="server_ip">http://192.168.43.144/monpera-book/</string>-->
     <!--<string name="server_ip">http://192.168.1.105/monpera-book/</string>-->

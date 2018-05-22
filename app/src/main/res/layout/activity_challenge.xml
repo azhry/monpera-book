@@ -17,6 +17,20 @@
         </include>
 
         <RelativeLayout
+            android:id="@+id/loadingTextLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading.."
+                android:padding="10dp"
+                android:textAlignment="center"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/noChallengeLayout"
             android:layout_width="match_parent"
             android:layout_height="200dp">
