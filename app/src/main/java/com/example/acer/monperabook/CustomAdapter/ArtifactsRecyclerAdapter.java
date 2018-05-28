@@ -97,6 +97,11 @@ public class ArtifactsRecyclerAdapter  extends RecyclerView.Adapter<ArtifactsRec
 //        });
     }
 
+    public void updateList(ArrayList<Artifact> list){
+        artifactsList = list;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return artifactsList.size();

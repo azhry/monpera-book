@@ -129,9 +129,10 @@ public class ChallengeActivity extends AppCompatActivity {
                                     numQuestion++;
 
                                 }
-//                                else {
-//                                    noChallengeLayout.setVisibility(View.VISIBLE);
-//                                }
+                                else {
+                                    loadingTextLayout.setVisibility(View.GONE);
+                                    noChallengeLayout.setVisibility(View.VISIBLE);
+                                }
                             }
 
                             mViewPager.setAdapter(mChallengePagerAdapter);

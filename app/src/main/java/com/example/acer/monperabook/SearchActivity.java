@@ -1,30 +1,14 @@
-package com.example.acer.monperabook.Fragment;
+package com.example.acer.monperabook;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,10 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.acer.monperabook.CustomAdapter.Artifact;
 import com.example.acer.monperabook.CustomAdapter.ArtifactsRecyclerAdapter;
-import com.example.acer.monperabook.R;
-import com.example.acer.monperabook.SQLite.SessionManager;
 import com.example.acer.monperabook.Singleton.AppSingleton;
-import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,62 +26,70 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by Azhary Arliansyah on 25/03/2018.
+ * Created by Azhary Arliansyah on 27/05/2018.
  */
 
-public class VisitorFragment extends Fragment {
+public class SearchActivity extends AppCompatActivity {
 
-    public static final String TAG = "VisitorFragment";
+    public static final String TAG = "SearchActivity";
     private String mEndpoint;
     private ArtifactsRecyclerAdapter artifactRecyclerAdapter;
     private RecyclerView.LayoutManager artifactLayoutManager;
     private RecyclerView artifactRecyclerView;
-    private ArrayList<Artifact> artifacts;
-
-    public VisitorFragment() {
-        // Required empty public constructor
-    }
+    private ArrayList<Artifact> artifacts = new ArrayList<>();
+    private Context activityContext;
+    private EditText searchEditText;
+    private ImageButton searchButton;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+
+        activityContext = this;
         mEndpoint = getString(R.string.server_ip);
-        artifacts = new ArrayList<>();
+
+        initUI();
+        fetchData();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.visitor_fragment, container, false);
-    }
+    private void initUI() {
 
-    @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-
-        super.onViewCreated(view, savedInstanceState);
-        if (view != null) {
-            renderUI(view);
-        }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-        }
-    }
-
-    private void renderUI(View view) {
-        artifactLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        artifactRecyclerView = (RecyclerView)getActivity().findViewById(R.id.artifact_recycler_view2);
+        artifactLayoutManager = new LinearLayoutManager(getApplicationContext());
+        artifactRecyclerView = (RecyclerView)findViewById(R.id.artifact_recycler_view);
         artifactRecyclerView.setLayoutManager(artifactLayoutManager);
-        getVisitorFavorite(view);
+
+        searchEditText = (EditText)findViewById(R.id.searchEditText);
+        searchButton = (ImageButton)findViewById(R.id.searchButton);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String q = searchEditText.getText().toString();
+                filter(q);
+
+            }
+        });
+
     }
 
-    private void getVisitorFavorite(final View view) {
+    private void filter(String query) {
+        ArrayList<Artifact> temp = new ArrayList();
+        for(Artifact d: artifacts){
+            //or use .equal(text) with you want equal match
+            //use .toLowerCase() for better matches
+            if(d.getTitle().toLowerCase().contains(query.toLowerCase())){
+                temp.add(d);
+            }
+        }
+        //update recyclerview
+        artifactRecyclerAdapter.updateList(temp);
+    }
 
-        String requestURL = mEndpoint + "artifak/most-favorite?limit=10";
+    private void fetchData() {
+
+        String requestURL = mEndpoint + "artifak/get-artifak";
         JsonObjectRequest getFavorites = new JsonObjectRequest(Request.Method.GET, requestURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -121,11 +110,11 @@ public class VisitorFragment extends Fragment {
 
                                 }
 
-                                artifactRecyclerAdapter = new ArtifactsRecyclerAdapter(artifacts, view.getContext());
+                                artifactRecyclerAdapter = new ArtifactsRecyclerAdapter(artifacts, activityContext);
                                 artifactRecyclerView.setAdapter(artifactRecyclerAdapter);
                                 artifactRecyclerAdapter.notifyDataSetChanged();
                             } else {
-                                Toast.makeText(view.getContext(), "Request error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activityContext, "Request error", Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {
@@ -142,7 +131,7 @@ public class VisitorFragment extends Fragment {
                         }
                     }
                 });
-        AppSingleton.getInstance(view.getContext()).addToRequestQueue(getFavorites, TAG);
+        AppSingleton.getInstance(activityContext).addToRequestQueue(getFavorites, TAG);
 
     }
 

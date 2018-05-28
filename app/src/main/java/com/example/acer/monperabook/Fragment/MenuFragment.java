@@ -51,6 +51,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.acer.monperabook.AboutAppActivity;
 import com.example.acer.monperabook.ArtifactDetailsActivity;
 import com.example.acer.monperabook.ChallengeActivity;
 import com.example.acer.monperabook.CustomAdapter.Artifact;
@@ -66,6 +67,7 @@ import com.example.acer.monperabook.MuseumProfileActivity;
 import com.example.acer.monperabook.R;
 import com.example.acer.monperabook.SQLite.DBHelper;
 import com.example.acer.monperabook.SQLite.SessionManager;
+import com.example.acer.monperabook.SearchActivity;
 import com.example.acer.monperabook.Singleton.AppSingleton;
 import com.facebook.login.LoginManager;
 
@@ -94,14 +96,12 @@ public class MenuFragment extends Fragment {
     private ArrayList<Artifact> localArtifacts = new ArrayList<>();
     private ArrayList<Artifact> popularCollections = new ArrayList<>();
     private ArtifactsAdapter artifactsAdapter;
-    private CollectionsRecyclerAdapter popularCollectionsRecyclerAdapter;
-    private RecyclerView popularCollectionRecyclerView;
+//    private CollectionsRecyclerAdapter popularCollectionsRecyclerAdapter;
+//    private RecyclerView popularCollectionRecyclerView;
     private ProgressDialog dialog;
     private String mEndpoint;
     private DBHelper db;
     private static String type;
-    private boolean isSearchOpened = false;
-    private EditText editSearch;
     private SliderPagerAdapter mAdapter;
     private SliderIndicator mIndicator;
     private SliderView sliderView;
@@ -109,6 +109,8 @@ public class MenuFragment extends Fragment {
     private FragmentActivity fragmentActivity;
     private RecyclerView menuRecyclerView;
     private MainMenuAdapter menuRecyclerViewAdapter;
+    private boolean isSearchOpened = false;
+    private EditText editSearch;
 
     public static Fragment newInstance(String type) {
         Fragment frag = new MenuFragment();
@@ -160,28 +162,28 @@ public class MenuFragment extends Fragment {
             case "main":
                 int SPAN_COUNT = 2;
                 String[] MENUS = new String[] {
-                    "Berdasarkan Jenis",
+//                    "Berdasarkan Jenis",
                     "Profil Museum",
-                    "Populer",
+//                    "Populer",
                     "Tutorial/Help",
                     "Tentang Aplikasi",
                     "Cari"
                 };
                 int[] ICONS = new int[] {
-                    R.drawable.ic_subject_black_24dp,
+//                    R.drawable.ic_subject_black_24dp,
                     R.drawable.ic_account_balance_black_24dp,
-                    R.drawable.ic_favorite_black,
+//                    R.drawable.ic_favorite_black,
                     R.drawable.ic_help_outline_black_24dp,
                     R.drawable.ic_error_outline_black_24dp,
                     R.drawable.ic_search_black_24dp
                 };
                 ArrayList<Intent> ACTIVITIES = new ArrayList<>();
-                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+//                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
                 ACTIVITIES.add(new Intent(getActivity(), MuseumProfileActivity.class));
+//                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
                 ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
-                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
-                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
-                ACTIVITIES.add(new Intent(getActivity(), MainActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), AboutAppActivity.class));
+                ACTIVITIES.add(new Intent(getActivity(), SearchActivity.class));
                 for (Intent intent : ACTIVITIES) {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 }
@@ -196,14 +198,14 @@ public class MenuFragment extends Fragment {
                 mLinearLayout   = (LinearLayout)view.findViewById(R.id.pagesContainer);
                 setupSlider(fragmentActivity.getSupportFragmentManager());
 
-                popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
-                        LinearLayoutManager.HORIZONTAL, false);
-                popularCollectionRecyclerView.setLayoutManager(layoutManager);
-                popularCollectionRecyclerView.setHasFixedSize(true);
-                popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
-                        view.getContext());
-                popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
+//                popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
+//                LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
+//                        LinearLayoutManager.HORIZONTAL, false);
+//                popularCollectionRecyclerView.setLayoutManager(layoutManager);
+//                popularCollectionRecyclerView.setHasFixedSize(true);
+//                popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
+//                        view.getContext());
+//                popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
                 getMostFavoriteArtifact2(view);
 
                 Button joinChallengeButton = (Button) view.findViewById(R.id.joinChallengeButton);
@@ -285,42 +287,6 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-
-        private final List<android.support.v4.app.Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public android.support.v4.app.Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(android.support.v4.app.Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
     // to get the action_search edit, override this method
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -328,20 +294,12 @@ public class MenuFragment extends Fragment {
         inflater.inflate(R.menu.action_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-        if ( type.equals("remote") || type.equals("local") ) {
-
-            final MenuItem actionSearch = menu.findItem(R.id.action_search);
-            actionSearch.setVisible(true);
-
-            Drawable actionSearchIcon = actionSearch.getIcon();
-            actionSearchIcon.mutate().setColorFilter
-                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
-
-        } else {
-
-            menu.findItem(R.id.action_search).setVisible(false);
-
-        }
+//        final MenuItem actionSearch = menu.findItem(R.id.action_search);
+//        actionSearch.setVisible(true);
+//
+//        Drawable actionSearchIcon = actionSearch.getIcon();
+//        actionSearchIcon.mutate().setColorFilter
+//                (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
 
         final MenuItem actionLogout = menu.findItem(R.id.action_logout);
 
@@ -355,9 +313,9 @@ public class MenuFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                handleMenuSearch(item);
-                return true;
+//            case R.id.action_search:
+//                handleMenuSearch(item);
+//                return true;
 
             case R.id.action_logout:
                 SessionManager session = new SessionManager(getActivity().getApplicationContext());
@@ -369,7 +327,7 @@ public class MenuFragment extends Fragment {
         return false;
     }
 
-    public void onBackPressed(Fragment frag) {
+    public void onBackPressed(android.app.Fragment frag) {
         if (isSearchOpened) {
             final ActionBar action = ((AppCompatActivity)getActivity()).getSupportActionBar(); // get the action bar
 
@@ -380,16 +338,15 @@ public class MenuFragment extends Fragment {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
-            MenuItem item = (MenuItem)getActivity().findViewById(R.id.action_search);
+//            MenuItem item = (MenuItem)getActivity().findViewById(R.id.action_search);
 
             //add the search icon in the action bar
-            item.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
-            item.getIcon().mutate().setColorFilter
-                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
+//            item.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
+//            item.getIcon().mutate().setColorFilter
+//                    (Color.argb(255, 255, 255, 255), PorterDuff.Mode.SRC_IN);
             isSearchOpened = false;
         }
     }
-
     protected void handleMenuSearch(final MenuItem item) {
         final ActionBar action = ((AppCompatActivity)getActivity()).getSupportActionBar(); // get the action bar
 
@@ -465,6 +422,42 @@ public class MenuFragment extends Fragment {
 
             isSearchOpened = true;
         }
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        private final List<android.support.v4.app.Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(android.support.v4.app.Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     private void ShowDialog(String msg, boolean check) {
@@ -680,10 +673,10 @@ public class MenuFragment extends Fragment {
                                         artifact.getString("kategori")));
                             }
 
-                            popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
-                                    view.getContext());
-                            popularCollectionsRecyclerAdapter.notifyDataSetChanged();
-                            popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
+//                            popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
+//                                    view.getContext());
+//                            popularCollectionsRecyclerAdapter.notifyDataSetChanged();
+//                            popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

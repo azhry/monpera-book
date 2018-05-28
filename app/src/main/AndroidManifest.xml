@@ -94,6 +94,9 @@
         <activity android:name=".ChallengeFinishActivity">
 
         </activity>
+        <activity android:name=".SearchActivity">
+
+        </activity>
     </application>
 
 </manifest>

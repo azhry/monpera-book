@@ -15,7 +15,18 @@
 
         </include>
 
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aplikasi Museum Guide ini adalah perangkat lunak yang bertujuan untuk membantu pengunjung museum dalam mendapatkan informasi mengenai koleksi-koleksi yang ada di museum Sultan Mahmud Badaruddin II Palembang.
+Pengguna harus berada di museum untuk dapat mengakses fitur informasi mengenai koleksi museum.
+Aplikasi ini dikembangkan oleh tim yang terdiri dari mahasiswa Fakultas Ilmu Komputer Universitas Sriwijaya sebagai tugas akhir di Jurusan Sistem Informasi.
+"/>
+        </LinearLayout>
 
     </LinearLayout>
 
