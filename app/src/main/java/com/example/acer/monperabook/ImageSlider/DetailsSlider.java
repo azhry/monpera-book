@@ -1,9 +1,9 @@
 package com.example.acer.monperabook.ImageSlider;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,32 +18,21 @@ import com.bumptech.glide.request.target.Target;
 import com.example.acer.monperabook.R;
 
 /**
- * Created by Azhary Arliansyah on 18/12/2017.
- *
- * This class is used to store the slider view
+ * Created by Azhary Arliansyah on 29/05/2018.
  */
 
-public class FragmentSlider extends Fragment {
+public class DetailsSlider extends Fragment {
 
     private static final String ARG_PARAM1 = "params";
-    private static final String ARG_PARAM2 = "params2";
 
     private String imageUrls;
 
-    public FragmentSlider() {}
+    public DetailsSlider() {}
 
-    public static FragmentSlider newInstance(String params) {
-        FragmentSlider fragment = new FragmentSlider();
+    public static DetailsSlider newInstance(String params) {
+        DetailsSlider fragment = new DetailsSlider();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, params);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static FragmentSlider newInstance2(int params) {
-        FragmentSlider fragment = new FragmentSlider();
-        Bundle args = new Bundle();
-        args.putInt(ARG_PARAM2, params);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,12 +41,11 @@ public class FragmentSlider extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         imageUrls = getArguments().getString(ARG_PARAM1);
-        int imageDrawable = getArguments().getInt(ARG_PARAM2);
         View view = inflater.inflate(R.layout.fragment_slider_item, container, false);
         ImageView img = (ImageView)view.findViewById(R.id.img);
         final ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progress);
         Glide.with(getActivity())
-                .load(imageUrls != null ? imageUrls : imageDrawable)
+                .load(imageUrls)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,

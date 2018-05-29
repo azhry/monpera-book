@@ -194,9 +194,9 @@ public class MenuFragment extends Fragment {
 
                 break;
             case "other":
-                sliderView      = (SliderView)view.findViewById(R.id.sliderView);
-                mLinearLayout   = (LinearLayout)view.findViewById(R.id.pagesContainer);
-                setupSlider(fragmentActivity.getSupportFragmentManager());
+//                sliderView      = (SliderView)view.findViewById(R.id.sliderView);
+//                mLinearLayout   = (LinearLayout)view.findViewById(R.id.pagesContainer);
+//                setupSlider(fragmentActivity.getSupportFragmentManager());
 
                 popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
@@ -634,7 +634,7 @@ public class MenuFragment extends Fragment {
     private void setupSlider(FragmentManager fragmentManager) {
         sliderView.setDurationScroll(800);
         List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
-        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1000.jpg"));
+        fragments.add(FragmentSlider.newInstance2(R.drawable.museum_smb));
 
         mAdapter = new SliderPagerAdapter(fragmentManager, fragments);
         sliderView.setAdapter(mAdapter);
