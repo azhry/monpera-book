@@ -47,7 +47,7 @@ public class FragmentSlider extends Fragment {
         ImageView img = (ImageView)view.findViewById(R.id.img);
         final ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progress);
         Glide.with(getActivity())
-                .load(imageUrls)
+                .load(R.drawable.museum_smb)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,

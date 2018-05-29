@@ -62,54 +62,54 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-                <!--<LinearLayout-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="20dp"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:weightSum="2">-->
-
-                    <!--<View-->
-                        <!--android:layout_width="20dp"-->
-                        <!--android:layout_height="2dp"-->
-                        <!--android:background="#2ebadc"/>-->
-
-                    <!--<TextView-->
-                        <!--android:text="Koleksi Terpopuler"-->
-                        <!--android:textAllCaps="true"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:layout_marginLeft="5dp"-->
-                        <!--android:layout_marginRight="5dp"/>-->
-
-                    <!--<View-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="2dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:layout_marginRight="5dp"-->
-                        <!--android:layout_marginLeft="5dp"-->
-                        <!--android:background="#2ebadc"/>-->
-
-                <!--</LinearLayout>-->
-                <ImageView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/museum_smb"/>
-                <!--<HorizontalScrollView-->
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:weightSum="2">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
+                        android:background="#2ebadc"/>
+
+                    <TextView
+                        android:text="Koleksi Terpopuler"
+                        android:textAllCaps="true"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"/>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="2dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="#2ebadc"/>
+
+                </LinearLayout>
+                <!--<ImageView-->
                     <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="190dp"-->
-                    <!--android:layout_marginTop="20dp"-->
-                    <!--android:orientation="horizontal">-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:src="@drawable/museum_smb"/>-->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
 
-                    <!--<android.support.v7.widget.RecyclerView-->
-                        <!--android:id="@+id/collectionRecyclerView"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:layout_width="fill_parent"-->
-                        <!--android:layout_height="wrap_content"/>-->
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/collectionRecyclerView"
+                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
 
 
-                <!--</HorizontalScrollView>-->
+                </HorizontalScrollView>
 
                 <LinearLayout
                     android:orientation="horizontal"

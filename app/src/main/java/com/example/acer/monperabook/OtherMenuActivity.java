@@ -72,20 +72,18 @@ public class OtherMenuActivity extends AppCompatActivity implements View.OnClick
         mLinearLayout   = (LinearLayout)findViewById(R.id.pagesContainer);
         context         = this;
 
-        setupSlider();
+//        setupSlider();
 
-//        mViewPager = (ViewPager) findViewById(R.id.viewPager);
-//        mCardAdapter = new CardPagerAdapter();
-//        getMostFavoriteArtifact();
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mCardAdapter = new CardPagerAdapter();
+        getMostFavoriteArtifact();
 
     }
 
     private void setupSlider() {
         sliderView.setDurationScroll(800);
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1000.jpg"));
-        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1001.jpg"));
-        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/Kunci pintu Kaabah.jpeg"));
+//        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/a.jpg"));
 
         mAdapter = new SliderPagerAdapter(getSupportFragmentManager(), fragments);
         sliderView.setAdapter(mAdapter);

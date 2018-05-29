@@ -96,8 +96,8 @@ public class MenuFragment extends Fragment {
     private ArrayList<Artifact> localArtifacts = new ArrayList<>();
     private ArrayList<Artifact> popularCollections = new ArrayList<>();
     private ArtifactsAdapter artifactsAdapter;
-//    private CollectionsRecyclerAdapter popularCollectionsRecyclerAdapter;
-//    private RecyclerView popularCollectionRecyclerView;
+    private CollectionsRecyclerAdapter popularCollectionsRecyclerAdapter;
+    private RecyclerView popularCollectionRecyclerView;
     private ProgressDialog dialog;
     private String mEndpoint;
     private DBHelper db;
@@ -198,14 +198,14 @@ public class MenuFragment extends Fragment {
                 mLinearLayout   = (LinearLayout)view.findViewById(R.id.pagesContainer);
                 setupSlider(fragmentActivity.getSupportFragmentManager());
 
-//                popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
-//                LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
-//                        LinearLayoutManager.HORIZONTAL, false);
-//                popularCollectionRecyclerView.setLayoutManager(layoutManager);
-//                popularCollectionRecyclerView.setHasFixedSize(true);
-//                popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
-//                        view.getContext());
-//                popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
+                popularCollectionRecyclerView = (RecyclerView) view.findViewById(R.id.collectionRecyclerView);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
+                        LinearLayoutManager.HORIZONTAL, false);
+                popularCollectionRecyclerView.setLayoutManager(layoutManager);
+                popularCollectionRecyclerView.setHasFixedSize(true);
+                popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
+                        view.getContext());
+                popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
                 getMostFavoriteArtifact2(view);
 
                 Button joinChallengeButton = (Button) view.findViewById(R.id.joinChallengeButton);
@@ -635,8 +635,6 @@ public class MenuFragment extends Fragment {
         sliderView.setDurationScroll(800);
         List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
         fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1000.jpg"));
-        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/MBK-1001.jpg"));
-        fragments.add(FragmentSlider.newInstance(mEndpoint + "img/Kunci pintu Kaabah.jpeg"));
 
         mAdapter = new SliderPagerAdapter(fragmentManager, fragments);
         sliderView.setAdapter(mAdapter);
@@ -673,10 +671,10 @@ public class MenuFragment extends Fragment {
                                         artifact.getString("kategori")));
                             }
 
-//                            popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
-//                                    view.getContext());
-//                            popularCollectionsRecyclerAdapter.notifyDataSetChanged();
-//                            popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
+                            popularCollectionsRecyclerAdapter = new CollectionsRecyclerAdapter(popularCollections,
+                                    view.getContext());
+                            popularCollectionsRecyclerAdapter.notifyDataSetChanged();
+                            popularCollectionRecyclerView.setAdapter(popularCollectionsRecyclerAdapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
