@@ -63,7 +63,7 @@
                             android:layout_width="match_parent"
                             android:id="@+id/selfieImage"
                             android:layout_height="200dp"
-                            android:src="@drawable/p200x200"
+                            android:src="@drawable/twibbon"
                             android:layout_marginTop="10dp"/>
 
                         <View
