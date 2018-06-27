@@ -111,6 +111,7 @@ public class CameraActivity extends AppCompatActivity implements ZXingScannerVie
                                     artifactDetailsIntent.putExtra("kategori", artifact.getString("kategori"));
                                     mScannerView.stopCamera();
                                     startActivity(artifactDetailsIntent);
+                                    finish();
                                 } else {
                                     Toast.makeText(mContext, "Data not found", Toast.LENGTH_SHORT).show();
                                 }
